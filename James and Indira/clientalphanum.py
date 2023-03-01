@@ -3,7 +3,7 @@ import csv
 import keyboard
 ##print("in client...")
 #server name and port
-server_name='44.204.141.113'
+server_name='3.237.199.213'
 server_port=12000
 client_socket=socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 #set TCP connection

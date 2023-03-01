@@ -1,5 +1,6 @@
 import socket
 import csv
+import json
 print("We're in server now..")
 #select port for server
 server_port=12000
@@ -12,10 +13,10 @@ welcome_socket.listen(1)
 print("server running on port: ",server_port)
 #now server side loop
 connection_socket,caddr=welcome_socket.accept()
-with open (data.csv,'w',newline='') as file:
+with open ('data.json','a+') as file:
     while True:
     
         cmsg=connection_socket.recv(1024)
         cmsg=cmsg.decode()
         print(cmsg)
-        csv.writer(cmsg)
+        json.dump(cmsg,file)
