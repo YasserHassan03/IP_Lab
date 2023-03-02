@@ -12,7 +12,7 @@ for row in csvreader:
 
         
         for i in range(1, len(row)):
-            jerk = (row[i] - accelerometer.csv[i-1]) / 0.1 #replace 0.1 with their value
+            jerk = (row[i] - row[i-1]) / 0.1 #replace 0.1 with their value
             jerk_list.append(jerk)
 
         
