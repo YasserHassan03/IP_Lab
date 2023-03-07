@@ -1,0 +1,17 @@
+#!/bin/bash
+
+# Dependencies: dynamo-archive
+# In case there is some big tables, it is advisable to dedicate a process for each big table 
+# and another process for the rest, since this can work in parallel
+# Can use https://github.com/bchew/dynamodump which is faster and easier
+
+key=<AKIASVJVETA6FMRSAQVWy>
+secret=<JiqF/b1UZN7pceDnszu6kYr1yqslKEGaWBNJXxAs>
+region=<us-east-1>
+
+
+declare -a TABLES={Leaderboard )
+for t in ${TABLES[@]}
+do
+	dynamo-archive --table=$t  --key=$key --secret=$secret --region=$region > $t.json
+done
