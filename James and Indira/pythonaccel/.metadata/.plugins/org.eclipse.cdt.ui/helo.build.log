@@ -1,0 +1,6 @@
+18:17:33 **** Clean-only build of configuration Nios II for project helo ****
+wsl make clean 
+[helo clean complete]
+
+18:17:35 Build Finished (took 2s.83ms)
+

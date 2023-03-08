@@ -1,0 +1,15 @@
+13:02:28 **** Clean-only build of configuration Nios II for project 3axis_bsp ****
+wsl make clean 
+[BSP clean complete]
+13:08:53 **** Clean-only build of configuration Nios II for project 3axis_bsp ****
+wsl make clean 
+[BSP clean complete]
+18:17:28 **** Clean-only build of configuration Nios II for project helo_bsp ****
+wsl make clean 
+[BSP clean complete]
+18:17:33 **** Clean-only build of configuration Nios II for project helo ****
+wsl make clean 
+[helo clean complete]
+18:27:32 **** Clean-only build of configuration Nios II for project 3axis_bsp ****
+wsl make clean 
+[BSP clean complete]

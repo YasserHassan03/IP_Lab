@@ -129,6 +129,7 @@ int main(){
     alt_32 z_read;
     int n = 0;
     alt_up_accelerometer_spi_dev * acc_dev;
+    printf("hello");
     acc_dev = alt_up_accelerometer_spi_open_dev("/dev/accelerometer_spi");
 
     if (acc_dev == NULL) { // if return 1, check if the spi ip name is "accelerometer_spi"
@@ -137,7 +138,7 @@ int main(){
 
     timer_init(sys_timer_isr);
     //printf("filt\n");
-    printf("x_axis,y_axis,z_axis\n")
+    printf("x_axis,y_axis,z_axis\n");
     while (1) {
         alt_up_accelerometer_spi_read_x_axis(acc_dev, & x_read);
         alt_up_accelerometer_spi_read_y_axis(acc_dev, & y_read);
@@ -150,7 +151,8 @@ int main(){
         //printf("%ld\n",y);
         // alt_printf("raw data: %x\n", x_read);
         printf("%ld,%ld,%ld\n",x_read,y_read,z_read);
-        convert_read((x_read+y_read+z_read)/3, & level, & led);
+        //printf("%ld,%ld\n",x_read,y_read);
+        convert_read((x_read+y_read+z_read-240)/3, & level, & led);
         n++;
     }
 
