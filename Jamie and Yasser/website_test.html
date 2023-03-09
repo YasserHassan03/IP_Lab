@@ -10,36 +10,53 @@
       p {color: #000000;}
   </style>
   </head>
+  <link rel=”stylesheet”
+
+href=”htpps://pyscript.net/alpha/pyscript.css” />
+
+<script defer
+
+src=”htpps://pyscript.net/alpha/pyscript.js”>
+
+</script>
   <body>
 
-    <py-config>
-      packages = ["matplotlib", "pandas", "boto3","dynamodb_json"]
-    </py-config>
+    <py-env>
+      #packages = ["matplotlib", "pandas", "boto3","dynamodb_json","math"]
+      - math
+      - pandas
+      - boto3
+      -matplotlib
+      -dynamodb_json
+    </py-env>
 
     <py-script>
       import boto3
       from dynamodb_json import json_util as json
       import pandas as pd
+      #import math
       
       
       dynamodb = boto3.resource('dynamodb', region_name='us-east-1')
       
       table = dynamodb.Table('Movies')
       
+      
       response = table.scan()
       data = response['Items']
       
       
       while 'LastEvaluatedKey' in response:
-          response = table.scan(ExclusiveStartKey=response['LastEvaluatedKey'])
-          data.extend(response['Items'])
+         response = table.scan(ExclusiveStartKey=response['LastEvaluatedKey'])
+         data.extend(response['Items'])
       
       
       print(f"Movies: ")
       
       obj = pd.DataFrame(json.loads(data))
-
-      #print("hello World!")
+      #print("test")
+      #a = math.sqrt(16)
+      #print(a)
       print(obj)
     </py-script>
 
