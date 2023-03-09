@@ -9,10 +9,7 @@ with open("/Users/aisha/Documents/IP/coursework/IP_Lab/James And Indira/data.txt
         #values = line[:-1]
         #values = values[:1]
         line.split(",")
-        x,y,z = (float(x) for x in line[1:-2].split(","))
-        x_val = int(x)
-        y_val = int(y)
-        z_val = int(z)
+        x_val,y_val,z_val = (float(x) for x in line[1:-2].split(","))
         def smoothness_score(x_val, y_val, z_val):
 
             x_jerk_list = []
