@@ -1,14 +1,18 @@
 #import csv
 
-with open("data.txt", "r") as file:
+with open("/Users/aisha/Documents/IP/coursework/IP_Lab/James And Indira/data.txt", "r") as file:
   #csvreader = csv.reader(file, delimiter=',')
     for line in file:
         
-        values= values.strip("[]")
-        values= line.split(",")
-        x_val = int(values[0])
-        y_val = int(values[1])
-        z_val = int(values[2])
+        #values = line.strip("[]")
+        #values.split(",")
+        #values = line[:-1]
+        #values = values[:1]
+        line.split(",")
+        x,y,z = (float(x) for x in line[1:-2].split(","))
+        x_val = int(x)
+        y_val = int(y)
+        z_val = int(z)
         def smoothness_score(x_val, y_val, z_val):
 
             x_jerk_list = []
