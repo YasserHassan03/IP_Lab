@@ -16,11 +16,17 @@ client_socket=socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 client_socket.connect((server_name,server_port))
 
 with open ('C:/Users/james/Desktop/Imperial/Informationprocessing/IP_Lab/James and Indira/pythonaccel/accelerometer.csv') as dat:
-    next(dat)
     read=csv.reader(dat) 
     n=0 
     while (True):
-        for row in read:
-            print(((','.join(row)+'\r').encode()).decode())
-            client_socket.send(('['+','.join(row)+']''\r').encode())
+        n=n+1
+        try:
+            for row in read:
+                print(((','.join(row)+'\r').encode()).decode())
+                client_socket.send(('['+','.join(row)+']''\r').encode())
+        except:
+            print("null")
+        if n>100000:
+            clearfile('C:/Users/james/Desktop/Imperial/Informationprocessing/IP_Lab/James and Indira/pythonaccel/accelerometer.csv')
+
 client_socket.close()
