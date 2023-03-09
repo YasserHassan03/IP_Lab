@@ -1,5 +1,4 @@
 import csv
-import accelerometer.csv
 
 with open("accelerometer.csv", 'r') as file:
   csvreader = csv.reader(file, delimiter=',')

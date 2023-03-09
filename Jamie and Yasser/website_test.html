@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Driver leaderboard</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="https://pyscript.net/latest/pyscript.css" />
+    <script defer src="https://pyscript.net/latest/pyscript.js"></script>
+    <style>
+      body {background-color: black;}
+      p {color: #000000;}
+  </style>
+  </head>
+  <body>
+
+    <py-config>
+      packages = ["matplotlib", "pandas", "boto3","dynamodb_json"]
+    </py-config>
+
+    <py-script>
+      import boto3
+      from dynamodb_json import json_util as json
+      import pandas as pd
+      
+      
+      dynamodb = boto3.resource('dynamodb', region_name='us-east-1')
+      
+      table = dynamodb.Table('Movies')
+      
+      response = table.scan()
+      data = response['Items']
+      
+      
+      while 'LastEvaluatedKey' in response:
+          response = table.scan(ExclusiveStartKey=response['LastEvaluatedKey'])
+          data.extend(response['Items'])
+      
+      
+      print(f"Movies: ")
+      
+      obj = pd.DataFrame(json.loads(data))
+
+      #print("hello World!")
+      print(obj)
+    </py-script>
+
+  </body>
+</html>
