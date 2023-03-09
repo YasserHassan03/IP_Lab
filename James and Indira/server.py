@@ -2,6 +2,9 @@ import socket
 import csv
 
 print("We're in server now..")
+deadfile= open('data.txt','w')
+deadfile.close()
+#clear file for new data
 #select port for server
 server_port=12000
 #create welcoming socket
@@ -13,10 +16,9 @@ welcome_socket.listen(1)
 print("server running on port: ",server_port)
 #now server side loop
 connection_socket,caddr=welcome_socket.accept()
-with open ('data.csv','w+',newline='') as file:
-    writer=csv.writer(file)
+with open ('data.txt','w+',newline='\r') as file:
     while True:   
         cmsg=connection_socket.recv(1024)
         cmsg=cmsg.decode()
         print(cmsg.split('\r'))
-        writer.writerow((cmsg.split('\r')))
+        file.write(cmsg)
