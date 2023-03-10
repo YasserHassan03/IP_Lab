@@ -10,7 +10,7 @@ secret=<JiqF/b1UZN7pceDnszu6kYr1yqslKEGaWBNJXxAs>
 region=<us-east-1>
 
 
-declare -a TABLES={Leaderboard )
+declare -a TABLES={Leaderboard}
 for t in ${TABLES[@]}
 do
 	dynamo-archive --table=$t  --key=$key --secret=$secret --region=$region > $t.json

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Driver leaderboard</title>
+        <meta charset="utf-8">
+        <style>
+            body {background-color: rgb(201, 76, 201);}
+            p {color: #000000;}
+        </style>
+        <link rel="stylesheet" href="https://pyscript.net/alpha/pyscript.css" />
+        <script defer src="https://pyscript.net/alpha/pyscript.js"></script>
+        <py-env>
+            #- matplotlib
+            - math
+            #- pandas
+            #- boto3
+            #- dynamodb_json
+        </py-env>
+        
+        <body>
+            <div>
+                <py-script>
+                    # importing the required module
+                    # import matplotlib.pyplot as plt
+                    # x axis values
+                    #fig, ax = plt.subplots()
+                    #x = [1,2,3]
+                    # corresponding y axis values
+                    #y = [2,4,1]
+                    # plotting the points
+                    #plt.plot(x, y)
+                    # naming the x axis
+                    #plt.xlabel('x - axis')
+                    # naming the y axis
+                    #plt.ylabel('y - axis')
+                    # giving a title to my graph
+                    #plt.title('My first graph!')
+                    #fig
+                    #import boto3
+                    #from dynamodb_json import json_util as json
+                    #import pandas as pd
+                    import math
+
+                    #dynamodb = boto3.resource('dynamodb', region_name='us-east-1')
+
+                    #table = dynamodb.Table('Movies')
+
+                    #response = table.scan()
+                    #data = response['Items']
+
+                    #while 'LastEvaluatedKey' in response:
+                    #    response = table.scan(ExclusiveStartKey=response['LastEvaluatedKey'])
+                    #    data.extend(response['Items'])
+
+                    #print(f"Movies: ")
+
+                    #obj = pd.DataFrame(json.loads(data))
+                    a=sqrt(16)
+                    print(a)
+                    ##print("hello World!")
+                    #print(obj)
+                </py-script>
+            </div>
+        </body>
+    </head>
+</html>

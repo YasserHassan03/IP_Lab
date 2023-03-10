@@ -31,33 +31,55 @@ src=”htpps://pyscript.net/alpha/pyscript.js”>
     </py-env>
 
     <py-script>
-      import boto3
-      from dynamodb_json import json_util as json
-      import pandas as pd
+      #import boto3
+      #from dynamodb_json import json_util as json
+      #import pandas as pd
       #import math
+
+      # importing the required module
+      import matplotlib.pyplot as plt
+      # x axis values
+      x = [1,2,3]
+      # corresponding y axis values
+      y = [2,4,1]
+ 
+      # plotting the points
+      plt.plot(x, y)
+ 
+      # naming the x axis
+      plt.xlabel('x - axis')
+      # naming the y axis
+      plt.ylabel('y - axis')
+ 
+      # giving a title to my graph
+      plt.title('My first graph!')
+
+
+
+
       
       
-      dynamodb = boto3.resource('dynamodb', region_name='us-east-1')
+      # dynamodb = boto3.resource('dynamodb', region_name='us-east-1')
       
-      table = dynamodb.Table('Movies')
-      
-      
-      response = table.scan()
-      data = response['Items']
+      # table = dynamodb.Table('Movies')
       
       
-      while 'LastEvaluatedKey' in response:
-         response = table.scan(ExclusiveStartKey=response['LastEvaluatedKey'])
-         data.extend(response['Items'])
+     # response = table.scan()
+      # data = response['Items']
       
       
-      print(f"Movies: ")
+      # while 'LastEvaluatedKey' in response:
+        # response = table.scan(ExclusiveStartKey=response['LastEvaluatedKey'])
+         #data.extend(response['Items'])
       
-      obj = pd.DataFrame(json.loads(data))
+      
+      print("Movies: ")
+      
+      #obj = pd.DataFrame(json.loads(data))
       #print("test")
       #a = math.sqrt(16)
       #print(a)
-      print(obj)
+      #print(obj)
     </py-script>
 
   </body>
