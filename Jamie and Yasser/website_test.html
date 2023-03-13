@@ -59,25 +59,25 @@ src=”htpps://pyscript.net/alpha/pyscript.js”>
 
       
       
-      # dynamodb = boto3.resource('dynamodb', region_name='us-east-1')
-      
-      # table = dynamodb.Table('Movies')
-      
-      
-     # response = table.scan()
-      # data = response['Items']
-      
-      
-      # while 'LastEvaluatedKey' in response:
-        # response = table.scan(ExclusiveStartKey=response['LastEvaluatedKey'])
-         #data.extend(response['Items'])
-      
-      
+       dynamodb = boto3.resource('dynamodb', region_name='us-east-1')
+    
+       table = dynamodb.Table('Movies')
+    
+    
+       response = table.scan()
+       data = response['Items']
+    
+    
+       while 'LastEvaluatedKey' in response:
+         response = table.scan(ExclusiveStartKey=response['LastEvaluatedKey'])
+         data.extend(response['Items'])
+    
+    
       print("Movies: ")
-      
-      #obj = pd.DataFrame(json.loads(data))
-      #print("test")
-      #print(obj)
+    
+      obj = pd.DataFrame(json.loads(data))
+      print("test")
+      print(obj)
     </py-script>
 
   </body>
