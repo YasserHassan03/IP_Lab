@@ -137,7 +137,7 @@ int main(){
 
     timer_init(sys_timer_isr);
     //printf("filt\n");
-    printf("x_axis,y_axis,z_axis\n")
+    printf("x_axis,y_axis,z_axis\n");
     while (1) {
         alt_up_accelerometer_spi_read_x_axis(acc_dev, & x_read);
         alt_up_accelerometer_spi_read_y_axis(acc_dev, & y_read);
