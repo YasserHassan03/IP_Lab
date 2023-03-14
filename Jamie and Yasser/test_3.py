@@ -15,12 +15,23 @@ data = response['Items']
     
 while 'LastEvaluatedKey' in response:
     response = table.scan(ExclusiveStartKey=response['LastEvaluatedKey'])
-    data.extend(response['Items'])
-    
-    
+    data.extend(response['Items']) 
 
     
 obj = pd.DataFrame(json.loads(data))
+
+setInterval(                               
+  function()
+  {
+     $.getJSON(                            
+        $SCRIPT_ROOT + '/get_values',     
+        {},                                
+        function(data)                    
+        {
+          $("#result").text(data.result);  
+        });
+  },
+  500); 
 
 app = Flask(__name__)
 @app.route('/')
