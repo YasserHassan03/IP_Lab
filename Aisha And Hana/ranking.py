@@ -1,3 +1,6 @@
+from decimal import Decimal
+import json
+import boto3
 #def ranking(smoothness_score):
 #
 #	ranking_list = []
@@ -27,22 +30,23 @@ def get_ranking(DriverId, JourneyId):
     
 #update ranking of individual driver
 def update_ranking(DriverId, JourneyId, smoothness_score):
-    dynamodb = boto3.resource('dynamodb', region_name='us-east-1')
-    table = dynamodb.Table('Leaderboard')
-    response = table.query(
+	dynamodb = boto3.resource('dynamodb', region_name='us-east-1')
+	table = dynamodb.Table('Leaderboard')
+	response = table.query(
 		KeyConditionExpression=Key('DriverId').eq(DriverId) & Key('JourneyId').eq(JourneyId)
 	)
-    if response['Items']:
+	if response['Items']:
 		driver = response['Items'][0]
-    	ranking_list = []
-    	for i in range(1, len(ranking_list)):
+		ranking_list = []
+	    
+		for i in range(1, len(ranking_list)):
 			ranking_list.append(smoothness_score)
 			ranking_list.sort(reverse=True)
 			ranking = ranking_list.index(smoothness_score) + 1
 			driver['ranking'] = ranking
 			table.put_item(Item=driver)
 			return ranking
-    else:
+	else:
 		print("Driver not found in leaderboard.")
 		return None
     
@@ -55,6 +59,7 @@ def get_all_rankings():
 	while 'LastEvaluatedKey' in response:
 		response = table.scan(ExclusiveStartKey=response['LastEvaluatedKey'])
 		data.extend(response['Items'])
+
 	for driver in items:
 		DriverId = driver['DriverId']
 		JourneyId = driver['JourneyId']
