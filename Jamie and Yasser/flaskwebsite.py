@@ -23,6 +23,8 @@ def hello():
  df = [str(i) for i in obj.values]
     
  return (df)
+def bob():
+   return hello.to_html(header="true", table_id="table")
 
 if __name__ == "__main__":
     app.debug = True
