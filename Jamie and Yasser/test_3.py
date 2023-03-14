@@ -2,6 +2,7 @@ from flask import Flask,render_template
 import boto3
 import pandas as pd
 from dynamodb_json import json_util as json
+import time
 
 
 dynamodb = boto3.resource('dynamodb', region_name='us-east-1')
@@ -20,22 +21,12 @@ while 'LastEvaluatedKey' in response:
     
 obj = pd.DataFrame(json.loads(data))
 
-setInterval(                               
-  function()
-  {
-     $.getJSON(                            
-        $SCRIPT_ROOT + '/get_values',     
-        {},                                
-        function(data)                    
-        {
-          $("#result").text(data.result);  
-        });
-  },
-  500); 
+while(True):
 
-app = Flask(__name__)
-@app.route('/')
-def hello_world():
-    return obj.to_html(header="true", table_id="table")
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', debug=True)
+    app = Flask(__name__)
+    @app.route('/')
+    def hello_world():
+        return obj.to_html(header="true", table_id="table")
+    if __name__ == '__main__':
+        app.run(host='0.0.0.0', debug=True)
+    time.sleep(10)
