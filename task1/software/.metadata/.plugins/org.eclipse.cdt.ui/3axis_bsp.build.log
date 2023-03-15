@@ -1,0 +1,6 @@
+14:24:20 **** Clean-only build of configuration Nios II for project 3axis_bsp ****
+wsl make clean 
+[BSP clean complete]
+
+14:24:20 Build Finished (took 251ms)
+

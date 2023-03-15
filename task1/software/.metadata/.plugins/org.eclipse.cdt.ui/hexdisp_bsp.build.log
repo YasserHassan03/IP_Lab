@@ -1,0 +1,6 @@
+11:18:06 **** Clean-only build of configuration Nios II for project hexdisp_bsp ****
+wsl make clean 
+[BSP clean complete]
+
+11:18:07 Build Finished (took 451ms)
+

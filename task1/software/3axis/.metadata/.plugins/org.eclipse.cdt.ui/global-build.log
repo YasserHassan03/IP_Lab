@@ -1,0 +1,3 @@
+14:21:04 **** Build of configuration Nios II for project 3axis_bsp ****
+wsl make all 
+[BSP build complete]

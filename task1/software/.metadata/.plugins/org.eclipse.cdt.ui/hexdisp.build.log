@@ -1,0 +1,51 @@
+11:32:36 **** Incremental Build of configuration Nios II for project hexdisp ****
+wsl make all 
+Info: Building /mnt/c/Users/james/Desktop/Imperial/Informationprocessing/Lab3/task1/software/hexdisp_bsp/
+make --no-print-directory -C /mnt/c/Users/james/Desktop/Imperial/Informationprocessing/Lab3/task1/software/hexdisp_bsp/
+[BSP build complete]
+Info: Compiling hello_world.c to obj/default/hello_world.o
+nios2-elf-gcc.exe -xc -MP -MMD -c -Ic:/Users/james/Desktop/Imperial/Informationprocessing/Lab3/task1/software/hexdisp_bsp//HAL/inc -Ic:/Users/james/Desktop/Imperial/Informationprocessing/Lab3/task1/software/hexdisp_bsp/ -Ic:/Users/james/Desktop/Imperial/Informationprocessing/Lab3/task1/software/hexdisp_bsp//drivers/inc -pipe -D__hal__ -DALT_NO_INSTRUCTION_EMULATION -DALT_SINGLE_THREADED    -O0 -g -Wall  -mno-hw-div -mno-hw-div -mno-hw-mul -mno-hw-mulx -mgpopt=global  -o "obj/default/hello_world.o" "hello_world.c"
+hello_world.c: In function 'readScore':
+hello_world.c:62:43: error: macro "IOWR_ALTERA_AVALON_PIO_DATA" requires 2 arguments, but only 1 given
+   62 |         IOWR_ALTERA_AVALON_PIO_DATA(HEX_0_)
+      |                                           ^
+In file included from hello_world.c:5:
+c:\users\james\desktop\imperial\informationprocessing\lab3\task1\software\hexdisp_bsp\drivers\inc\altera_avalon_pio_regs.h:38: note: macro "IOWR_ALTERA_AVALON_PIO_DATA" defined here
+   38 | #define IOWR_ALTERA_AVALON_PIO_DATA(base, data)       IOWR(base, 0, data)
+      | 
+hello_world.c:62:9: error: 'IOWR_ALTERA_AVALON_PIO_DATA' undeclared (first use in this function)
+   62 |         IOWR_ALTERA_AVALON_PIO_DATA(HEX_0_)
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+hello_world.c:62:9: note: each undeclared identifier is reported only once for each function it appears in
+hello_world.c:62:36: error: expected ';' before '}' token
+   62 |         IOWR_ALTERA_AVALON_PIO_DATA(HEX_0_)
+      |                                    ^
+      |                                    ;
+   63 | }
+      | ~                                   
+hello_world.c: In function 'main':
+hello_world.c:149:20: warning: passing argument 1 of 'gets' from incompatible pointer type [-Wincompatible-pointer-types]
+  149 |         score=gets(fp);
+      |                    ^~
+      |                    |
+      |                    FILE *
+In file included from hello_world.c:8:
+c:\intelfpga_lite\22.1std\nios2eds\bin\gnu\h-x86_64-mingw32\nios2-elf\include\stdio.h:218:15: note: expected 'char *' but argument is of type 'FILE *'
+  218 | char *  gets (char *);
+      |               ^~~~~~
+hello_world.c:149:14: error: assignment to expression with array type
+  149 |         score=gets(fp);
+      |              ^
+hello_world.c:132:18: warning: unused variable 'coeffs' [-Wunused-variable]
+  132 |         fixed_32 coeffs[]={24538,25771,29318,35140,43158,53256,65279,79042,94325,110883,128450,146737,165444,184263,202883,220992,238291,254488,269314,282519,293881,303209,310346,315172,317606,317606,315172,310346,303209,293881,282519,269314,254488,238291,220992,202883,184263,165444,146737,128450,110883,94325,79042,65279,53256,43158,35140,29318,25771,24538};
+      |                  ^~~~~~
+hello_world.c:131:17: warning: unused variable 'exec_t2' [-Wunused-variable]
+  131 |         alt_u32 exec_t2;
+      |                 ^~~~~~~
+hello_world.c:130:14: warning: variable 'score' set but not used [-Wunused-but-set-variable]
+  130 |         char score[6];
+      |              ^~~~~
+make: *** [Makefile:725: obj/default/hello_world.o] Error 1
+
+11:32:37 Build Finished (took 1s.48ms)
+

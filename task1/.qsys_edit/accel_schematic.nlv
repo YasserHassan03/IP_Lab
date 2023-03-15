@@ -1,0 +1,36 @@
+# # File gsaved with Nlview version 6.3.8  2013-12-19 bk=1.2992 VDI=34 GEI=35
+# 
+preplace inst accel.hex_0 -pg 1 -lvl 3 -y 1110
+preplace inst accel.cpu -pg 1 -lvl 2 -y 520
+preplace inst accel -pg 1 -lvl 1 -y 40 -regy -20
+preplace inst accel.hex_1 -pg 1 -lvl 3 -y 450
+preplace inst accel.cpu.reset_bridge -pg 1
+preplace inst accel.hex_2 -pg 1 -lvl 3 -y 550
+preplace inst accel.onchip_memory -pg 1 -lvl 3 -y 650
+preplace inst accel.jtag_uart -pg 1 -lvl 3 -y 150
+preplace inst accel.hex_3 -pg 1 -lvl 3 -y 730
+preplace inst accel.accelerometer_spi -pg 1 -lvl 3 -y 30
+preplace inst accel.hex_4 -pg 1 -lvl 3 -y 830
+preplace inst accel.sysid_qsys_0 -pg 1 -lvl 3 -y 930
+preplace inst accel.hex_5 -pg 1 -lvl 3 -y 1010
+preplace inst accel.led -pg 1 -lvl 3 -y 350
+preplace inst accel.cpu.clock_bridge -pg 1
+preplace inst accel.clk -pg 1 -lvl 1 -y 450
+preplace inst accel.timer -pg 1 -lvl 3 -y 250
+preplace inst accel.cpu.cpu -pg 1
+preplace netloc EXPORT<net_container>accel</net_container>(SLAVE)led.external_connection,(SLAVE)accel.led_external_connection) 1 0 3 NJ 380 NJ 380 NJ
+preplace netloc EXPORT<net_container>accel</net_container>(SLAVE)accelerometer_spi.external_interface,(SLAVE)accel.accelerometer_spi_external_interface) 1 0 3 NJ 80 NJ 80 NJ
+preplace netloc EXPORT<net_container>accel</net_container>(SLAVE)hex_0.external_connection,(SLAVE)accel.hex_0) 1 0 3 NJ 1140 NJ 1140 NJ
+preplace netloc INTERCONNECT<net_container>accel</net_container>(MASTER)cpu.instruction_master,(SLAVE)hex_5.s1,(SLAVE)timer.s1,(SLAVE)hex_1.s1,(SLAVE)hex_2.s1,(SLAVE)cpu.debug_mem_slave,(SLAVE)onchip_memory.s1,(SLAVE)hex_3.s1,(SLAVE)sysid_qsys_0.control_slave,(SLAVE)jtag_uart.avalon_jtag_slave,(SLAVE)hex_0.s1,(MASTER)cpu.data_master,(SLAVE)accelerometer_spi.avalon_accelerometer_spi_mode_slave,(SLAVE)led.s1,(SLAVE)hex_4.s1) 1 1 2 470 460 870
+preplace netloc EXPORT<net_container>accel</net_container>(SLAVE)hex_4.external_connection,(SLAVE)accel.hex_4) 1 0 3 NJ 860 NJ 860 NJ
+preplace netloc FAN_OUT<net_container>accel</net_container>(SLAVE)hex_1.clk,(SLAVE)jtag_uart.clk,(MASTER)clk.clk,(SLAVE)led.clk,(SLAVE)onchip_memory.clk1,(SLAVE)sysid_qsys_0.clk,(SLAVE)hex_5.clk,(SLAVE)accelerometer_spi.clk,(SLAVE)hex_0.clk,(SLAVE)cpu.clk,(SLAVE)timer.clk,(SLAVE)hex_3.clk,(SLAVE)hex_2.clk,(SLAVE)hex_4.clk) 1 1 2 410 420 850
+preplace netloc EXPORT<net_container>accel</net_container>(SLAVE)accel.hex_3,(SLAVE)hex_3.external_connection) 1 0 3 NJ 760 NJ 760 NJ
+preplace netloc EXPORT<net_container>accel</net_container>(SLAVE)accel.hex_1,(SLAVE)hex_1.external_connection) 1 0 3 NJ 400 NJ 400 NJ
+preplace netloc FAN_OUT<net_container>accel</net_container>(SLAVE)jtag_uart.irq,(SLAVE)accelerometer_spi.interrupt,(MASTER)cpu.irq,(SLAVE)timer.irq) 1 2 1 830
+preplace netloc FAN_OUT<net_container>accel</net_container>(SLAVE)cpu.reset,(SLAVE)hex_5.reset,(SLAVE)hex_1.reset,(SLAVE)led.reset,(MASTER)clk.clk_reset,(SLAVE)timer.reset,(SLAVE)hex_4.reset,(SLAVE)hex_0.reset,(SLAVE)hex_3.reset,(SLAVE)accelerometer_spi.reset,(SLAVE)hex_2.reset,(SLAVE)jtag_uart.reset,(SLAVE)sysid_qsys_0.reset,(SLAVE)onchip_memory.reset1) 1 1 2 430 440 930
+preplace netloc EXPORT<net_container>accel</net_container>(SLAVE)clk.clk_in_reset,(SLAVE)accel.reset) 1 0 1 NJ
+preplace netloc EXPORT<net_container>accel</net_container>(SLAVE)hex_5.external_connection,(SLAVE)accel.hex_5) 1 0 3 NJ 1040 NJ 1040 NJ
+preplace netloc EXPORT<net_container>accel</net_container>(SLAVE)hex_2.external_connection,(SLAVE)accel.hex_2) 1 0 3 NJ 520 NJ 480 NJ
+preplace netloc EXPORT<net_container>accel</net_container>(SLAVE)accel.clk,(SLAVE)clk.clk_in) 1 0 1 NJ
+levelinfo -pg 1 0 200 1230
+levelinfo -hier accel 210 240 590 970 1220

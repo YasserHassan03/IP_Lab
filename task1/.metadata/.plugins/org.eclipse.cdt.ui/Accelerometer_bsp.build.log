@@ -1,0 +1,6 @@
+19:43:48 **** Build of configuration Nios II for project Accelerometer_bsp ****
+wsl make all 
+[BSP build complete]
+
+19:43:48 Build Finished (took 242ms)
+
