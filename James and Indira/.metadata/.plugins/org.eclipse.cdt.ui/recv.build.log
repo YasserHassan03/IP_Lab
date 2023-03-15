@@ -168,3 +168,6 @@ Info:            57 KBytes free for stack + heap.
 Info: Creating recv.objdump
 nios2-elf-objdump.exe --disassemble --syms --all-header --source recv.elf >recv.objdump
 [recv build complete]
+
+22:31:19 Build Finished (took 10s.387ms)
+
