@@ -66,10 +66,11 @@ def bob():
             }
         </style>
         '''
-    table_html = f"<html><head><title>Drivers Leaderboard</title></head><body><h1 style='text-align:center;'>Drivers Leaderboard</h1>{table_html}</body></html>"
+    table_html = f"<html><head><meta http-equiv='refresh' content='30'><title>Drivers Leaderboard</title></head><body><h1 style='text-align:center;'>Drivers Leaderboard</h1>{table_html}</body></html>"
     return str(Markup(css + table_html))
 
 
 if __name__ == "__main__":
     app.debug = True
     app.run(host="0.0.0.0", port=5000)
+
