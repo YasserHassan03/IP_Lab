@@ -14,6 +14,10 @@ def create_leaderboard_table(dynamodb=None):
             {
                 'AttributeName': 'JourneyId',
                 'KeyType': 'RANGE'  # Sort key
+            },
+            {
+                'AttributeName': 'smoothness',
+                'KeyType': 'RANGE'  # Sort key
             }
         ],
         AttributeDefinitions=[
@@ -23,6 +27,10 @@ def create_leaderboard_table(dynamodb=None):
             },
             {
                 'AttributeName': 'JourneyId',
+                'AttributeType': 'N'
+            },
+            {
+                'AttributeName': 'smoothness',
                 'AttributeType': 'N'
             },
 

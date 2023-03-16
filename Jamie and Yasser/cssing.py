@@ -21,6 +21,7 @@ while 'LastEvaluatedKey' in response:
 
     
 obj = pd.DataFrame(json.loads(data))
+obj = obj.sort_values(by=['smoothness'], ascending=False)
 
 app = Flask(__name__)
 app.route('/')
