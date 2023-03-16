@@ -51,18 +51,22 @@ def bob():
                 text-align: left !important;
                 padding: 8px !important;
                 border-bottom: 1px solid #ddd !important;
+                background-color: #ffffff
             }
         
             th {
-                background-color: #f2f2f2 !important;
+                background-color: #b56bdd !important;
             }
         
             tr:hover {
-                background-color: #6bbfde !important;
+                background-color: #b56bdd !important;
+            }
+            body {
+                background-color: #6bbfde;
             }
         </style>
         '''
-    
+    table_html = f"<html><head><title>Drivers Leaderboard</title></head><body><h1 style='text-align:center;'>Drivers Leaderboard</h1>{table_html}</body></html>"
     return str(Markup(css + table_html))
 
 
