@@ -5,39 +5,37 @@ from dynamodb_json import json_util as json
 from flask import Response
 from flask import Flask, Markup
 
+
+dynamodb = boto3.resource('dynamodb', region_name='us-east-1')
+    
+table = dynamodb.Table('Leaderboard')
+    
+    
+response = table.scan()
+data = response['Items']
+    
+    
+while 'LastEvaluatedKey' in response:
+    response = table.scan(ExclusiveStartKey=response['LastEvaluatedKey'])
+    data.extend(response['Items']) 
+
+    
+obj = pd.DataFrame(json.loads(data))
+
 app = Flask(__name__)
-
-@app.route('/')
-def hello():
-    dynamodb = boto3.resource('dynamodb', region_name='us-east-1')
-    table = dynamodb.Table('Leaderboard')
-
-    response = table.scan()
-    data = response['Items']
-
-    while 'LastEvaluatedKey' in response:
-        response = table.scan(ExclusiveStartKey=response['LastEvaluatedKey'])
-        data.extend(response['Items'])
-
-    obj = pd.DataFrame(json.loads(data))
-    df = [str(i) for i in obj.values]
-
-    return (df)
+app.route('/')
+def hello_world():
+    return obj.to_html(header="true", table_id="table")
 
 # ...
-@app.route('/')
+@app.route('/formatting')
 def bob():
     # generate the HTML table string
-    table_html = hello.to_html(header="true", table_id="table", classes="table table-striped table-hover", 
+    table_html = obj.to_html(header="true", table_id="table", classes="table table-striped table-hover", 
                                border="0", justify="center",
-                               table_style='width:100%;max-width:700px', 
-                               render_links=True,
-                               attrs={"class": "pandas"})\
-                    .replace('<table', '<table class="table"') \
-                    .replace('<thead>', '<thead class="thead-light">') \
-                    .replace('<table', '<table class="table"') \
-                    .replace('<tbody>', '<tbody class="table-hover">') \
-                    .replace('class="dataframe ', 'class="dataframe table-hover ')
+                               
+                               render_links=True)
+                     
                     
     css = '''
         <style>
@@ -60,7 +58,7 @@ def bob():
             }
         
             tr:hover {
-                background-color: #f5f5f5 !important;
+                background-color: #6bbfde !important;
             }
         </style>
         '''
