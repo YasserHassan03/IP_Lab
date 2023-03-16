@@ -14,24 +14,26 @@ import boto3
 #            print(f"Rank {i}: {ranking_list[i-1]}")
 
 #get rank of individual driver
-def get_ranking(DriverId, JourneyId, Smoothness):
-	dynamodb = boto3.resource('dynamodb', region_name='us-east-1')
-	table = dynamodb.Table('Leaderboard')
-	response = table.query(
-		KeyConditionExpression=Key('DriverId').eq(DriverId) & Key('JourneyId').eq(JourneyId) & Key('Smoothness').eq(Smoothness)
-	)
-	if response['Items']:
-		driver = response['Items'][0]
-		return driver['ranking']
-	else:
-		print("Driver not found in leaderboard.")
+def get_ranking(DriverId, JourneyId):
+    dynamodb = boto3.resource('dynamodb', region_name='us-east-1')
+    table = dynamodb.Table('Leaderboard')
+    response = table.query(
+        KeyConditionExpression=Key('DriverId').eq(DriverId) & Key('JourneyId').eq(JourneyId)
+    )
+    if response['Items']:
+        driver = response['Items'][0]
+        ranking = driver['ranking']
+        return ranking
+    else:
+        print("Driver not found in leaderboard.")
+        return None
     
 #update ranking of individual driver
 def update_ranking(DriverId, JourneyId, smoothness_score):
 	dynamodb = boto3.resource('dynamodb', region_name='us-east-1')
 	table = dynamodb.Table('Leaderboard')
 	response = table.query(
-		KeyConditionExpression=Key('DriverId').eq(DriverId) & Key('JourneyId').eq(JourneyId) & Key('Smoothness').eq(Smoothness)
+		KeyConditionExpression=Key('DriverId').eq(DriverId) & Key('JourneyId').eq(JourneyId)
 	)
 	if response['Items']:
 		driver = response['Items'][0]
@@ -61,7 +63,6 @@ def get_all_rankings():
 	for driver in items:
 		DriverId = driver['DriverId']
 		JourneyId = driver['JourneyId']
-		Smoothness = driver['Smoothness']
 		ranking = driver['ranking']
 		print(f"Driver {DriverId} ({JourneyId}): Rank {ranking}")
 	

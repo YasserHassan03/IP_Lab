@@ -1,7 +1,7 @@
 from pprint import pprint
 import boto3
 
-def put_leaderboard(DriverId,JourneyId, Smoothness, dynamodb=None):
+def put_leaderboard(DriverId,JourneyId, smoothness, dynamodb=None):
     if not dynamodb:
         dynamodb = boto3.resource('dynamodb', region_name='us-east-1')
 
@@ -10,7 +10,9 @@ def put_leaderboard(DriverId,JourneyId, Smoothness, dynamodb=None):
        Item={
             'DriverId': DriverId,
             'JourneyId': JourneyId,
-            'smoothness': Smoothness,
+            'info': {
+                'smoothness' : smoothness
+            }
         }
     )
     return response
@@ -20,4 +22,3 @@ if __name__ == '__main__':
     movie_resp = put_leaderboard("David", 12345, "7.56", "5.35")
     print("Put driver succeeded:")
     #pprint(leaderboard_resp)
-    
