@@ -7,7 +7,7 @@ deadfile= open('data.txt','w')
 deadfile.close()
 #clear file for new data
 #select port for server
-score = '987654'
+score = '987654' #test score val
 server_port=12000
 #create welcoming socket
 welcome_socket=socket.socket(socket.AF_INET,socket.SOCK_STREAM)
@@ -18,7 +18,7 @@ welcome_socket.listen(1)
 print("server running on port: ",server_port)
 #now server side loop
 connection_socket,caddr=welcome_socket.accept()
-connection_socket.send(score.encode())
+connection_socket.send(score.encode()) #send score to client 
 with open ('data.txt','w+',newline='\r') as file:
     while True:   
         cmsg=connection_socket.recv(1024)
