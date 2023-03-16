@@ -16,7 +16,7 @@ def create_leaderboard_table(dynamodb=None):
                 'KeyType': 'RANGE'  # Sort key
             },
             {
-                'AttributeName': 'smoothness',
+                'AttributeName': 'Smoothness',
                 'KeyType': 'RANGE'  # Sort key
             }
         ],
@@ -30,7 +30,7 @@ def create_leaderboard_table(dynamodb=None):
                 'AttributeType': 'N'
             },
             {
-                'AttributeName': 'smoothness',
+                'AttributeName': 'Smoothness',
                 'AttributeType': 'N'
             },
 
