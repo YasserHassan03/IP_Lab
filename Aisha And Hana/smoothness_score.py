@@ -1,7 +1,7 @@
 #import csv
 import threading 
 
-with open("/Users/aisha/Documents/IP/coursework/IP_Lab/James And Indira/data.txt", "r") as file:
+with open("/Users/aisha/Documents/IP/coursework/IP_Lab/data.txt", "r") as file:
   #csvreader = csv.reader(file, delimiter=',')
     for line in file:
         
