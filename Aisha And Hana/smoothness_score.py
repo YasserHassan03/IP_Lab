@@ -1,4 +1,5 @@
 #import csv
+import threading 
 
 with open("/Users/aisha/Documents/IP/coursework/IP_Lab/James And Indira/data.txt", "r") as file:
   #csvreader = csv.reader(file, delimiter=',')
@@ -9,8 +10,9 @@ with open("/Users/aisha/Documents/IP/coursework/IP_Lab/James And Indira/data.txt
         #values = line[:-1]
         #values = values[:1]
         line.split(",")
-        x_val,y_val,z_val = (float(x) for x in line[1:-2].split(","))
+        #x_val,y_val,z_val = (float(x) for x in line[1:-2].split(","))
         def smoothness_score(x_val, y_val, z_val):
+            threading.Timer(5.0, smoothness_score).start() #runs function every 5 seconds
 
             x_jerk_list = []
             y_jerk_list = []
@@ -24,9 +26,6 @@ with open("/Users/aisha/Documents/IP/coursework/IP_Lab/James And Indira/data.txt
                 x_jerk_list.append(x_jerk)
                 y_jerk_list.append(y_jerk)
                 z_jerk_list.append(z_jerk)
-
-            
-            jerk_magnitudes = []
 
             
             for x_jerk in x_jerk_list:
