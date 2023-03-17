@@ -106,8 +106,8 @@ def get_key(dynamodb=None):
 
     # specify the table name and key value
     if not dynamodb:
-        dynamodb = boto3.resource('dynamodb', region_name='us-east-1')
-        table = dynamodb.Table('Leaderboard')
+        dynamodb = boto3.client('dynamodb', region_name='us-east-1')
+
 
     table_name = 'Leaderboard'
     partition_key_value = 'DriverId'
