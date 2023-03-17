@@ -1,6 +1,10 @@
 import csv
 import threading
 import time
+import boto3
+from pprint import pprint
+from botocore.exceptions import ClientError
+
 
 def read_data(file_path):
     x_vals = []
@@ -46,11 +50,25 @@ def smoothness_score(x_vals, y_vals, z_vals):
 
 
 # Open the file for reading
-file_path = "/Users/aisha/Documents/IP/coursework/IP_Lab/data.txt"
-x_vals, y_vals, z_vals = read_data(file_path)
+i=0
+with open("/home/ubuntu/Python Scripts and data for Lab 6/xyz.txt", "r") as file:
+    contents = file.readlines()[1:]  # skip the first line (assuming it's a header)
+    x_vals = []
+    y_vals = []
+    z_vals = []
+    for line in contents:
+        values = line.strip().split(",")
+        if len(values) != 3:  # skip lines that don't contain exactly 3 values
+            continue
+        try:
+            x_vals.append(float(values[0]))
+            y_vals.append(float(values[1]))
+            z_vals.append(float(values[2]))
+        except ValueError:  # skip lines that contain non-numeric data
+            continue
+    result = smoothness_score(x_vals, y_vals, z_vals)
+    i= i +1
 
-<<<<<<< HEAD
-result = 2   
 def put_leaderboard(DriverId,JourneyId, normalised_smoothness_score, dynamodb=None):
 
     if not dynamodb:
@@ -59,7 +77,7 @@ def put_leaderboard(DriverId,JourneyId, normalised_smoothness_score, dynamodb=No
         response = table.put_item(
            Item={
                 'DriverId': DriverId,
-                'JourneyId': JourneyId + 1,
+                'JourneyId': JourneyId ,
                 'info': {
                     'normalised_smoothness-score' : normalised_smoothness_score 
                 }
@@ -67,9 +85,54 @@ def put_leaderboard(DriverId,JourneyId, normalised_smoothness_score, dynamodb=No
         )
     return DriverId, JourneyId, normalised_smoothness_score
 
+#def put_leaderboard(DriverId,JourneyId, normalised_smoothness_score, dynamodb=None):
+#
+#    if not dynamodb:
+#        dynamodb = boto3.resource('dynamodb', region_name='us-east-1')
+#        table = dynamodb.Table('DavidsResults')
+#        response = table.put_item(
+#           Item={
+#                'DriverId': DriverId,
+#                'JourneyId': JourneyId ,
+#                'info': {
+#                    'normalised_smoothness-score' : normalised_smoothness_score 
+#                }
+#            }
+#        )
+#    return DriverId, JourneyId, normalised_smoothness_score
+
+def get_key(dynamodb=None):
+    #dynamodb = boto3.client('dynamodb')
+
+    # specify the table name and key value
+    if not dynamodb:
+        dynamodb = boto3.resource('dynamodb', region_name='us-east-1')
+        table = dynamodb.Table('Leaderboard')
+
+    table_name = 'Leaderboard'
+    partition_key_value = 'DriverId'
+    sort_key_value = 'JourneyId'
+
+    # create a dictionary containing the key values to retrieve
+    key = {
+        'partition-key-name': {'S': partition_key_value},
+        'sort-key-name': {'S': sort_key_value}
+    }
+
+    # perform the query to retrieve the item
+    response = dynamodb.get_item(TableName=table_name, Key=key)
+
+    # extract the value for the sort key
+    sort_key_value = response['Item']['sort-key-name']['S']
+
+    return sort_key_value
+
+
+
 if __name__ == '__main__':
-    leaderboard_resp = put_leaderboard("David", "00001", result)
+    leaderboard_resp = put_leaderboard("David", get_key()+1, result)
     print("Put driver succeeded:")
+    pprint(leaderboard_resp)
 
 
 
@@ -104,12 +167,3 @@ if __name__ == '__main__':
 
 
 #put normalised_smoothness_score into a json file
-=======
-for i in range(len(x_vals)):
-    # Calculate the smoothness score for the current line
-    score = smoothness_score(x_vals, y_vals, z_vals)
-    # Print the score to the console
-    print(score)
-    # Wait for a short time (e.g. 0.1 seconds) before reading the next line
-    time.sleep(0.1)
->>>>>>> d36ab771375806c9db74d51a4050b72624039f05

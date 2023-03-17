@@ -20,6 +20,7 @@ def put_leaderboard(DriverId,JourneyId, normalised_smoothness_score, dynamodb=No
     return DriverId, JourneyId, normalised_smoothness_score
 
 if __name__ == '__main__':
-    leaderboard_resp = put_leaderboard("David", 3, result)
+    journey= str(JourneyId + 1)
+    leaderboard_resp = put_leaderboard("David", journey , result)
     print("Put driver succeeded:")
     pprint(leaderboard_resp)
