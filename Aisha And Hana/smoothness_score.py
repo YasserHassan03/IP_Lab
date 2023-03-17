@@ -1,47 +1,40 @@
-#import csv
-import threading 
-from pprint import pprint
-import boto3
+import csv
+import threading
+import time
 
-  #csvreader = csv.reader(file, delimiter=',')
+def read_data(file_path):
+    x_vals = []
+    y_vals = []
+    z_vals = []
+    with open(file_path, "r") as file:
+        for line in file:
+            x_val, y_val, z_val = [float(val) for val in line.split(",")]
+            x_vals.append(x_val)
+            y_vals.append(y_val)
+            z_vals.append(z_val)
+    return x_vals, y_vals, z_vals
     
-        
-        #values = line.strip("[]")
-        #values.split(",")
-        #values = line[:-1]
-        #values = values[:1]
-        
-        #x_val,y_val,z_val = (float(x) for x in line[1:-2].split(","))
-
-def smoothness_score(x_val, y_val, z_val):
-
-    threading.Timer(5.0, smoothness_score).start() #runs function every 5 second
+def smoothness_score(x_vals, y_vals, z_vals):
     x_jerk_list = []
     y_jerk_list = []
     z_jerk_list = []
-    
-    for i in range(1, len(x_val)):
-        x_jerk = (x_val[i] - x_val[i-1]) / 0.1 #replace 0.1 with their value
-        y_jerk = (y_val[i] - y_val[i-1]) / 0.1
-        z_jerk = (z_val[i] - z_val[i-1]) / 0.1
+
+    for i in range(1, len(x_vals)):
+        x_jerk = (x_vals[i] - x_vals[i-1]) / 0.1 #replace 0.1 with their value
+        y_jerk = (y_vals[i] - y_vals[i-1]) / 0.1
+        z_jerk = (z_vals[i] - z_vals[i-1]) / 0.1
         x_jerk_list.append(x_jerk)
         y_jerk_list.append(y_jerk)
         z_jerk_list.append(z_jerk)
-    for x_jerk in x_jerk_list:
-        x_jerk_magnitude = abs(x_jerk)
-        x_jerk_magnitudes = []
-        x_jerk_magnitudes.append(x_jerk_magnitude)
-    for y_jerk in y_jerk_list:
-        y_jerk_magnitude = abs(y_jerk)
-        y_jerk_magnitudes = []
-        y_jerk_magnitudes.append(y_jerk_magnitude)
-    for z_jerk in z_jerk_list:
-        z_jerk_magnitude = abs(z_jerk)
-        z_jerk_magnitudes = []
-        z_jerk_magnitudes.append(z_jerk_magnitude)
+
+    x_jerk_magnitudes = [abs(x_jerk) for x_jerk in x_jerk_list]
+    y_jerk_magnitudes = [abs(y_jerk) for y_jerk in y_jerk_list]
+    z_jerk_magnitudes = [abs(z_jerk) for z_jerk in z_jerk_list]
+
     average_x_jerk_magnitude = sum(x_jerk_magnitudes) / len(x_jerk_magnitudes)
     average_y_jerk_magnitude = sum(y_jerk_magnitudes) / len(y_jerk_magnitudes)
     average_z_jerk_magnitude = sum(z_jerk_magnitudes) / len(z_jerk_magnitudes)
+
     x_smoothness_score = 1 / average_x_jerk_magnitude
     y_smoothness_score = 1 / average_y_jerk_magnitude
     z_smoothness_score = 1 / average_z_jerk_magnitude
@@ -51,75 +44,15 @@ def smoothness_score(x_val, y_val, z_val):
 
     return normalised_smoothness_score
 
-with open("/home/ubuntu/Python Scripts and data for Lab 6/xyz.txt", "r") as file:
-    contents = file.readlines()[1:]  # skip the first line (assuming it's a header)
-    x_vals = []
-    y_vals = []
-    z_vals = []
-    for line in contents:
-        values = line.strip().split(",")
-        if len(values) != 3:  # skip lines that don't contain exactly 3 values
-            continue
-        try:
-            x_vals.append(float(values[0]))
-            y_vals.append(float(values[1]))
-            z_vals.append(float(values[2]))
-        except ValueError:  # skip lines that contain non-numeric data
-            continue
-    result = smoothness_score(x_vals, y_vals, z_vals)
 
+# Open the file for reading
+file_path = "/Users/aisha/Documents/IP/coursework/IP_Lab/data.txt"
+x_vals, y_vals, z_vals = read_data(file_path)
 
-    
-def put_leaderboard(DriverId,JourneyId, normalised_smoothness_score, dynamodb=None):
-
-    if not dynamodb:
-        dynamodb = boto3.resource('dynamodb', region_name='us-east-1')
-        table = dynamodb.Table('Leaderboard')
-        response = table.put_item(
-           Item={
-                'DriverId': DriverId,
-                'JourneyId': JourneyId,
-                'info': {
-                    'normalised_smoothness-score' : normalised_smoothness_score 
-                }
-            }
-        )
-    return DriverId, JourneyId, normalised_smoothness_score
-
-if __name__ == '__main__':
-    leaderboard_resp = put_leaderboard("david", "345678", result)
-    print("Put driver succeeded:")
-
-
-
-
-
-
-
-
-
-#def put_leaderboard(DriverId,JourneyId, normalied_smoothness_score, dynamodb=None):
-#    if not dynamodb:
-#        dynamodb = boto3.resource('dynamodb', region_name='us-east-1')
-#    smoothness_score()
-#    table = dynamodb.Table('Leaderboard')
-#    response = table.put_item(
-#       Item={
-#            'DriverId': DriverId,
-#            'JourneyId': JourneyId,
-#            'info': {
-#                'normalised_smoothness_score' : normalised_smoothness_score
-#            }
-#        }
-#    )
-#    return response
-#
-#
-#if __name__ == '__main__':
-#    movie_resp = put_leaderboard("David", 12345, "7.56", "5.35")
-#    print("Put driver succeeded:")
-#    #pprint(leaderboard_resp)
-
-
-
-#put normalised_smoothness_score into a json file
+for i in range(len(x_vals)):
+    # Calculate the smoothness score for the current line
+    score = smoothness_score(x_vals, y_vals, z_vals)
+    # Print the score to the console
+    print(score)
+    # Wait for a short time (e.g. 0.1 seconds) before reading the next line
+    time.sleep(0.1)
