@@ -1,6 +1,11 @@
 from decimal import Decimal
 import json
 import boto3
+#open smoothness_score.py file
+with open("smoothness_score.json") as json_file:
+    Drivers = json.load(json_file, parse_float=Decimal)
+    #load data into dynamodb
+
 def load_Drivers(Drivers, dynamodb=None):
     if not dynamodb:
         dynamodb = boto3.resource('dynamodb', region_name='us-east-1')
