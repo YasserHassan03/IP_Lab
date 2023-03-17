@@ -69,7 +69,7 @@ with open("/home/ubuntu/Python Scripts and data for Lab 6/xyz.txt", "r") as file
     result = smoothness_score(x_vals, y_vals, z_vals)
 
 
-    
+result = 2   
 def put_leaderboard(DriverId,JourneyId, normalised_smoothness_score, dynamodb=None):
 
     if not dynamodb:
@@ -78,7 +78,7 @@ def put_leaderboard(DriverId,JourneyId, normalised_smoothness_score, dynamodb=No
         response = table.put_item(
            Item={
                 'DriverId': DriverId,
-                'JourneyId': JourneyId,
+                'JourneyId': JourneyId + 1,
                 'info': {
                     'normalised_smoothness-score' : normalised_smoothness_score 
                 }
@@ -87,7 +87,7 @@ def put_leaderboard(DriverId,JourneyId, normalised_smoothness_score, dynamodb=No
     return DriverId, JourneyId, normalised_smoothness_score
 
 if __name__ == '__main__':
-    leaderboard_resp = put_leaderboard("david", "345678", result)
+    leaderboard_resp = put_leaderboard("David", "00001", result)
     print("Put driver succeeded:")
 
 

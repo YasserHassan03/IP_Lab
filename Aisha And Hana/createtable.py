@@ -5,22 +5,14 @@ def create_leaderboard_table(dynamodb=None):
         dynamodb = boto3.resource('dynamodb',region_name='us-east-1')
 
     table = dynamodb.create_table(
-        TableName='Leaderboard',
+        TableName='DavidsResults',
         KeySchema=[
             {
-                'AttributeName': 'DriverId',
-                'KeyType': 'HASH'  # Partition key
-            },
-            {
                 'AttributeName': 'JourneyId',
-                'KeyType': 'RANGE'  # Sort key
+                'KeyType': 'HASH'  # Partition key
             }
         ],
         AttributeDefinitions=[
-            {
-                'AttributeName': 'DriverId',
-                'AttributeType': 'S'
-            },
             {
                 'AttributeName': 'JourneyId',
                 'AttributeType': 'N'
@@ -37,5 +29,5 @@ def create_leaderboard_table(dynamodb=None):
 
 if __name__ == '__main__':
     movie_table = create_leaderboard_table()
-    print("Table status:", leaderboard_table.table_status)
+    print("Table status:", movie_table.table_status)
 
