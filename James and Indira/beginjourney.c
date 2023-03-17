@@ -420,16 +420,20 @@ int main(){
     }
 
     timer_init(sys_timer_isr);
+    begin:
     int l=read_chars();
-	int start;
     //printf("filt\n");
     printf("x_axis,y_axis,z_axis\n");
     while (1) {
     	button= IORD_ALTERA_AVALON_PIO_DATA(BUTTON_BASE);
-    	//printf("%d\n",button);
-    	start=start_stop(button);
-		
-    	//start_stop(0);
+    	//printf("%d",start_stop(button));
+    	start_stop(button);
+    	if (button==2){
+    		printf("END\n");
+    	}
+    	if (button==1){
+    		printf("START\n");
+    	}
         alt_up_accelerometer_spi_read_x_axis(acc_dev, & x_read);
         alt_up_accelerometer_spi_read_y_axis(acc_dev, & y_read);
         alt_up_accelerometer_spi_read_z_axis(acc_dev, & z_read);
@@ -446,6 +450,7 @@ int main(){
         if (n>1000){
         	printf("%c",0x4);
         	n=0;//index to reset
+        	goto begin;
         }
     }
     free(x);
