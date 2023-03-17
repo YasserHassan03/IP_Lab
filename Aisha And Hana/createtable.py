@@ -54,6 +54,6 @@ def create_leaderboard_table(dynamodb=None):
 
 
 if __name__ == '__main__':
-    movie_table = create_leaderboard_table()
-    print("Table status:", movie_table.table_status)
+    dave_table = create_leaderboard_table()
+    print("Table status:", dave_table.table_status)
 
