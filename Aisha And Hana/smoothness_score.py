@@ -8,21 +8,22 @@ from botocore.exceptions import ClientError
 import decimal 
     
 def smoothness_score(x_vals, y_vals, z_vals):
+    
     x_jerk_list = []
     y_jerk_list = []
     z_jerk_list = []
 
     for i in range(1, len(x_vals)):
-        x_jerk = [decimal.Decimal((x_vals[i] - x_vals[i-1]) / (0.1))]#replace 0.1 with their value
-        y_jerk = [decimal.Decimal((y_vals[i] - y_vals[i-1]) / 0.1)]
-        z_jerk = [decimal.Decimal((z_vals[i] - z_vals[i-1]) / 0.1)]
+        x_jerk = [decimal.Decimal((((x_vals[i] - x_vals[i-1]) / (0.1))))]#replace 0.1 with their value
+        y_jerk = [decimal.Decimal((((y_vals[i] - y_vals[i-1]) / 0.1)))]
+        z_jerk = [decimal.Decimal((((z_vals[i] - z_vals[i-1]) / 0.1)))]
         x_jerk_list.append(x_jerk)
         y_jerk_list.append(y_jerk)
         z_jerk_list.append(z_jerk)
 
-    x_jerk_magnitudes = [decimal.Decimal([abs(x_jerk) for x_jerk in x_jerk_list])]
-    y_jerk_magnitudes = [decimal.Decimal([abs(y_jerk) for y_jerk in y_jerk_list])]
-    z_jerk_magnitudes = [decimal.Decimal([abs(z_jerk) for z_jerk in z_jerk_list])]
+    x_jerk_magnitudes = [decimal.Decimal((([abs(x_jerk) for x_jerk in x_jerk_list])))]
+    y_jerk_magnitudes = [decimal.Decimal((([abs(y_jerk) for y_jerk in y_jerk_list])))]
+    z_jerk_magnitudes = [decimal.Decimal(([abs(z_jerk) for z_jerk in z_jerk_list]))]
 
     average_x_jerk_magnitude = sum(x_jerk_magnitudes) / len(x_jerk_magnitudes)
     average_y_jerk_magnitude = sum(y_jerk_magnitudes) / len(y_jerk_magnitudes)
@@ -36,29 +37,31 @@ def smoothness_score(x_vals, y_vals, z_vals):
     avrg_smoothness = (x_smoothness_score + y_smoothness_score + z_smoothness_score) / 3
     normalised_smoothness_score = avrg_smoothness / max_smoothness_score
 
-    return decimal.Decimal(normalised_smoothness_score)
+    return decimal.Decimal(((normalised_smoothness_score)))
 
 
 # Open the file for reading
 
 with open("/home/ubuntu/Python Scripts and data for Lab 6/xyz.txt", "r") as file:
+    threading.Timer(5.0, smoothness_score).start()
+
     contents = file.readlines()[1:]  # skip the first line (assuming it's a header)
-    x_vals = []
-    y_vals = []
-    z_vals = []
+    x_vals = [1]
+    y_vals = [1]
+    z_vals = [1]
     for line in contents:
         values = line.strip().split(",")
         if len(values) != 3:  # skip lines that don't contain exactly 3 values
             continue
         try:
-            x_vals.append(decimal.Decimal(values[0]))
-            y_vals.append(decimal.Decimal(values[1]))
-            z_vals.append(decimal.Decimal(values[2]))
+           decimal.Decimal( x_vals.append(((values[0]))))
+           decimal.Decimal(y_vals.append(((values[1]))))
+           decimal.Decimal(z_vals.append(((values[2]))))
         except ValueError:  # skip lines that contain non-numeric data
             continue
-    result = smoothness_score(x_vals, y_vals, z_vals)
+    result = smoothness_score(decimal.Decimal(x_vals), decimal.Decimal(y_vals), decimal.Decimal(z_vals))
 
-def put_leaderboard(DriverId,JourneyId, normalised_smoothness_score, dynamodb=None):
+def put_leaderboard(DriverId,JourneyId, smoothness_score, dynamodb=None):
 
     if not dynamodb:
         dynamodb = boto3.resource('dynamodb', region_name='us-east-1')
@@ -68,31 +71,73 @@ def put_leaderboard(DriverId,JourneyId, normalised_smoothness_score, dynamodb=No
                 'DriverId': DriverId,
                 'JourneyId': JourneyId ,
                 'info': {
-                    'normalised_smoothness-score' : normalised_smoothness_score 
+                    'smoothness_score' : smoothness_score 
                 }
             }
         )
-    return DriverId, JourneyId, normalised_smoothness_score
+    return DriverId, JourneyId, smoothness_score
 
-
-def query_leaderboard(DriverId, dynamodb=None):
+#def query_leaderboard(JourneyId, dynamodb=None):
+#    if not dynamodb:
+#        dynamodb = boto3.resource('dynamodb', region_name='us-east-1')
+#
+#    table = dynamodb.Table('Leaderboard')
+#    response = table.query(
+#        KeyConditionExpression=Key('JourneyId').eq(JourneyId)
+#    )
+#    return response['Items']
+def query_and_project_drivers(DriverId, dynamodb=None):
     if not dynamodb:
         dynamodb = boto3.resource('dynamodb', region_name='us-east-1')
 
     table = dynamodb.Table('Leaderboard')
+    #print(f"Get year, title, genres, and lead actor")
+
     response = table.query(
-        KeyConditionExpression=Key('DriverId').eq(DriverId)
+        ProjectionExpression="smoothness_score, JourneyId",
+        ExpressionAttributeNames={"#driverid": "DriverId"},
+        KeyConditionExpression=
+            Key('Driver').eq(DriverId)
     )
     return response['Items']
 
-
-
 if __name__ == '__main__':
     query_driver ='David'
-    leaderboard=query_leaderboard(query_driver)
+    leaderboard=query_and_project_drivers(query_driver)
     leaderboard_resp = put_leaderboard('David', leaderboard, result)
+    #query_david = 'David'
+    #david=query_david(query_david)
+    #david_resp = put_david_leaderboard('David', david, result)
     print("Put driver succeeded:")
     pprint(leaderboard_resp)
+#
+#def put_david_leaderboard(DriverId,JourneyId, normalised_smoothness_score, dynamodb=None):
+#
+#    if not dynamodb:
+#        dynamodb = boto3.resource('dynamodb', region_name='us-east-1')
+#        table = dynamodb.Table('Leaderboard')
+#        response = table.put_item(
+#           Item={
+#                'DriverId': DriverId,
+#                'JourneyId': JourneyId ,
+#                'info': {
+#                    'normalised_smoothness-score' : normalised_smoothness_score 
+#                }
+#            }
+#        )
+#    return DriverId, JourneyId, normalised_smoothness_score
+#
+#
+#def query_david(DriverId, dynamodb=None):
+#    if not dynamodb:
+#        dynamodb = boto3.resource('dynamodb', region_name='us-east-1')
+#
+#    table = dynamodb.Table('DavidsResults')
+#    response = table.query(
+#        KeyConditionExpression=Key('DriverId').eq(DriverId)
+#    )
+#    return response['Items']
+
 
 
 
