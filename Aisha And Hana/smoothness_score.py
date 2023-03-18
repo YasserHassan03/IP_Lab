@@ -42,28 +42,26 @@ def smoothness_score(x_vals, y_vals, z_vals):
 
 # Open the file for reading
 
-with open("/home/ubuntu/Python Scripts and data for Lab 6/xyz.txt", "r") as file:
-    threading.Timer(5.0, smoothness_score).start()
-
+with open("/home/ubuntu/Python Scripts and data for Lab 6/data.txt", "r", encoding="utf-8") as file:
     contents = file.readlines()[1:]  # skip the first line (assuming it's a header)
-    x_vals = ["1"]
-    y_vals = ["1"]
-    z_vals = ["1"]
+    x_vals = []
+    y_vals = []
+    z_vals = []
     for line in contents:
         values = line.strip().split(",")
         if len(values) != 3:  # skip lines that don't contain exactly 3 values
             continue
         else:
-            for value in values:
-                int(value)
-                #abs(value)
+            for i in range(len(values)):
+                values[i] = int(values[i])
+                #values[i] = abs(values[i])
         try:
-           decimal.Decimal( x_vals.append(((values[0]))))
-           decimal.Decimal(y_vals.append(((values[1]))))
-           decimal.Decimal(z_vals.append(((values[2]))))
+            x_vals.append(values[0])
+            y_vals.append(values[1])
+            z_vals.append(values[2])
         except ValueError:  # skip lines that contain non-numeric data
             continue
-    result = smoothness_score(decimal.Decimal(x_vals), decimal.Decimal(y_vals), decimal.Decimal(z_vals))
+    result = decimal.Decimal(smoothness_score((x_vals), (y_vals), (z_vals)))
 
 def put_leaderboard(DriverId,JourneyId, smoothness_score, dynamodb=None):
 
