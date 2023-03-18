@@ -13,31 +13,34 @@ def smoothness_score(x_vals, y_vals, z_vals):
     y_jerk_list = []
     z_jerk_list = []
 
-    for i in range(1, len(x_vals)):
-        x_jerk = [decimal.Decimal((((x_vals[i] - x_vals[i-1]) / (0.1))))]#replace 0.1 with their value
-        y_jerk = [decimal.Decimal((((y_vals[i] - y_vals[i-1]) / 0.1)))]
-        z_jerk = [decimal.Decimal((((z_vals[i] - z_vals[i-1]) / 0.1)))]
-        x_jerk_list.append(x_jerk)
-        y_jerk_list.append(y_jerk)
-        z_jerk_list.append(z_jerk)
+    if x_vals != None:
+        for i in range(1, len(x_vals)):
+            x_jerk = [decimal.Decimal((((x_vals[i] - x_vals[i-1]) / (0.1))))]#replace 0.1 with their value
+            y_jerk = [decimal.Decimal((((y_vals[i] - y_vals[i-1]) / 0.1)))]
+            z_jerk = [decimal.Decimal((((z_vals[i] - z_vals[i-1]) / 0.1)))]
+            x_jerk_list.append(x_jerk)
+            y_jerk_list.append(y_jerk)
+            z_jerk_list.append(z_jerk)
 
-    x_jerk_magnitudes = [decimal.Decimal((([abs(x_jerk) for x_jerk in x_jerk_list])))]
-    y_jerk_magnitudes = [decimal.Decimal((([abs(y_jerk) for y_jerk in y_jerk_list])))]
-    z_jerk_magnitudes = [decimal.Decimal(([abs(z_jerk) for z_jerk in z_jerk_list]))]
+            x_jerk_magnitudes = decimal.Decimal((((x_vals[i] - x_vals[i-1]) / (0.1)))) #replace 0.1 with their value
+            y_jerk_magnitudes = decimal.Decimal((((y_vals[i] - y_vals[i-1]) / 0.1)))
+            z_jerk_magnitudes = decimal.Decimal((((z_vals[i] - z_vals[i-1]) / 0.1)))
 
-    average_x_jerk_magnitude = sum(x_jerk_magnitudes) / len(x_jerk_magnitudes)
-    average_y_jerk_magnitude = sum(y_jerk_magnitudes) / len(y_jerk_magnitudes)
-    average_z_jerk_magnitude = sum(z_jerk_magnitudes) / len(z_jerk_magnitudes)
+            average_x_jerk_magnitude = sum(x_jerk_magnitudes) / len(x_jerk_magnitudes)
+            average_y_jerk_magnitude = sum(y_jerk_magnitudes) / len(y_jerk_magnitudes)
+            average_z_jerk_magnitude = sum(z_jerk_magnitudes) / len(z_jerk_magnitudes)
 
 
-    x_smoothness_score = 1 / average_x_jerk_magnitude
-    y_smoothness_score = 1 / average_y_jerk_magnitude
-    z_smoothness_score = 1 / average_z_jerk_magnitude
-    max_smoothness_score = 1 / 0.1  # The maximum possible jerk magnitude is 0.1 m/s^2, assuming a perfectly smooth ride, #replace 0.1 with their value
-    avrg_smoothness = (x_smoothness_score + y_smoothness_score + z_smoothness_score) / 3
-    normalised_smoothness_score = avrg_smoothness / max_smoothness_score
+            x_smoothness_score = 1 / average_x_jerk_magnitude
+            y_smoothness_score = 1 / average_y_jerk_magnitude
+            z_smoothness_score = 1 / average_z_jerk_magnitude
+            max_smoothness_score = 1 / 0.1  # The maximum possible jerk magnitude is 0.1 m/s^2, assuming a perfectly smooth ride, #replace 0.1 with their value
+            avrg_smoothness = (x_smoothness_score + y_smoothness_score + z_smoothness_score) / 3
+            normalised_smoothness_score = avrg_smoothness / max_smoothness_score
 
-    return decimal.Decimal(((normalised_smoothness_score)))
+            return decimal.Decimal(((normalised_smoothness_score)))
+    else:
+        return 0
 
 
 # Open the file for reading
@@ -61,7 +64,7 @@ with open("/home/ubuntu/Python Scripts and data for Lab 6/data.txt", "r", encodi
             z_vals.append(values[2])
         except ValueError:  # skip lines that contain non-numeric data
             continue
-    result = decimal.Decimal(smoothness_score((x_vals), (y_vals), (z_vals)))
+        result = decimal.Decimal(smoothness_score((x_vals), (y_vals), (z_vals)))
 
 def put_leaderboard(DriverId,JourneyId, smoothness_score, dynamodb=None):
 
