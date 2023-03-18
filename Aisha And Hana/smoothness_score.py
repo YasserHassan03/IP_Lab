@@ -22,7 +22,9 @@ def smoothness_score(x_vals, y_vals, z_vals):
         x_jerk_list.append(x_jerk)
         y_jerk_list.append(y_jerk)
         z_jerk_list.append(z_jerk)
-        
+        x_jerk =round(x_jerk, 3)
+        y_jerk =round(y_jerk, 3)
+        z_jerk =round(z_jerk, 3)
         x_jerk_magnitude = decimal.Decimal((x_jerk))
         y_jerk_magnitude = decimal.Decimal((y_jerk))
         z_jerk_magnitude = decimal.Decimal((z_jerk))
