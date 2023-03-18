@@ -6,6 +6,7 @@ from pprint import pprint
 from boto3.dynamodb.conditions import Key
 from botocore.exceptions import ClientError
 import decimal 
+import numpy as np
 
 def smoothness_score(x_vals, y_vals, z_vals):
     x_jerk_list = [1,1,1]
@@ -14,6 +15,9 @@ def smoothness_score(x_vals, y_vals, z_vals):
     x_jerk_magnitudes = [1,1,1]
     y_jerk_magnitudes = [1,1,1]
     z_jerk_magnitudes = [1,1,1]
+    x_smoothness_scores = []
+    y_smoothness_scores = []
+    z_smoothness_scores = []
     
     for i in range(1, len(x_vals)):
         x_jerk = decimal.Decimal((x_vals[i] - x_vals[i-1]) / (0.1))#replace 0.1 with their value
@@ -24,25 +28,43 @@ def smoothness_score(x_vals, y_vals, z_vals):
         y_jerk_list.append(y_jerk)
         z_jerk_list.append(z_jerk)
         
-        x_jerk_magnitude = abs(round(x_jerk, 3))
-        y_jerk_magnitude = abs(round(y_jerk, 3))
-        z_jerk_magnitude = abs(round(z_jerk, 3))
-        
+        x_jerk_magnitude = np.abs(x_jerk)
+        y_jerk_magnitude = np.abs(y_jerk)
+        z_jerk_magnitude = np.abs(z_jerk)
+
         x_jerk_magnitudes.append(x_jerk_magnitude)
         y_jerk_magnitudes.append(y_jerk_magnitude)
         z_jerk_magnitudes.append(z_jerk_magnitude)
+
+        window_size = 5
+
+        for i in range(len(x_jerk_magnitudes)):
+            start = max(0, i-window_size)
+            end = min(len(x_jerk_magnitudes), i+window_size)
+            x_jerk_window = x_jerk_magnitudes[start:end]
+            y_jerk_window = y_jerk_magnitudes[start:end]
+            z_jerk_window = z_jerk_magnitudes[start:end]
+            
+            x_smoothness_score = 1 / decimal.Decimal(np.mean(x_jerk_window))
+            y_smoothness_score = 1 / decimal.Decimal(np.mean(y_jerk_window))
+            z_smoothness_score = 1 / decimal.Decimal(np.mean(z_jerk_window))
+
+            x_smoothness_scores.append(x_smoothness_score)
+            y_smoothness_scores.append(y_smoothness_score)
+            z_smoothness_scores.append(z_smoothness_score)
         
-    average_x_jerk_magnitude = decimal.Decimal(sum(x_jerk_magnitudes) / len(x_jerk_magnitudes))
-    average_y_jerk_magnitude = decimal.Decimal(sum(y_jerk_magnitudes) / len(y_jerk_magnitudes))
-    average_z_jerk_magnitude = decimal.Decimal(sum(z_jerk_magnitudes) / len(z_jerk_magnitudes))
+        
+    average_x_smoothness = decimal.Decimal(np.mean(x_smoothness_scores))
+    average_y_smoothness = decimal.Decimal(np.mean(y_smoothness_scores))
+    average_z_smoothness = decimal.Decimal(np.mean(z_smoothness_scores))
     
-    x_smoothness_score = 1 / average_x_jerk_magnitude
-    y_smoothness_score = 1 / average_y_jerk_magnitude
-    z_smoothness_score = 1 / average_z_jerk_magnitude
+    x_smoothness_score = 1 / average_x_smoothness
+    y_smoothness_score = 1 / average_y_smoothness
+    z_smoothness_score = 1 / average_z_smoothness
     
     max_smoothness_score = 1 / 0.1  # The maximum possible jerk magnitude is 0.1 m/s^2, assuming a perfectly smooth ride, #replace 0.1 with their value
     avrg_smoothness = (x_smoothness_score + y_smoothness_score + z_smoothness_score) / 3
-    normalised_smoothness_score = avrg_smoothness
+    normalised_smoothness_score = avrg_smoothness / max_smoothness_score
     
     return decimal.Decimal(normalised_smoothness_score)
 
@@ -93,7 +115,7 @@ if __name__ == '__main__':
                     continue
                 else:
                     for i in range(len(values)):
-                        values[i] = int(values[i])
+                        values[i] = decimal(values[i])
                         #values[i] = abs(values[i])
                 try:
                     x_vals.append(values[0])
