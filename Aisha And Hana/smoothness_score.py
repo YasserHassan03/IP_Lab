@@ -16,18 +16,18 @@ def smoothness_score(x_vals, y_vals, z_vals):
     z_jerk_magnitudes = [1,1,1]
     
     for i in range(1, len(x_vals)):
-        x_jerk = [decimal.Decimal((((x_vals[i] - x_vals[i-1]) / (0.1))))]#replace 0.1 with their value
-        y_jerk = [decimal.Decimal((((y_vals[i] - y_vals[i-1]) / 0.1)))]
-        z_jerk = (decimal.Decimal((((z_vals[i] - z_vals[i-1]) / 0.1))))
+        x_jerk = decimal.Decimal((x_vals[i] - x_vals[i-1]) / (0.1))#replace 0.1 with their value
+        y_jerk = decimal.Decimal((y_vals[i] - y_vals[i-1]) / 0.1)
+        z_jerk = decimal.Decimal((z_vals[i] - z_vals[i-1]) / 0.1)
+
         x_jerk_list.append(x_jerk)
         y_jerk_list.append(y_jerk)
         z_jerk_list.append(z_jerk)
-        x_jerk =round(x_jerk, 3)
-        y_jerk =round(y_jerk, 3)
-        z_jerk =round(z_jerk, 3)
-        x_jerk_magnitude = decimal.Decimal((x_jerk))
-        y_jerk_magnitude = decimal.Decimal((y_jerk))
-        z_jerk_magnitude = decimal.Decimal((z_jerk))
+        
+        x_jerk_magnitude = abs(round(x_jerk, 3))
+        y_jerk_magnitude = abs(round(y_jerk, 3))
+        z_jerk_magnitude = abs(round(z_jerk, 3))
+        
         x_jerk_magnitudes.append(x_jerk_magnitude)
         y_jerk_magnitudes.append(y_jerk_magnitude)
         z_jerk_magnitudes.append(z_jerk_magnitude)
@@ -42,7 +42,7 @@ def smoothness_score(x_vals, y_vals, z_vals):
     
     max_smoothness_score = 1 / 0.1  # The maximum possible jerk magnitude is 0.1 m/s^2, assuming a perfectly smooth ride, #replace 0.1 with their value
     avrg_smoothness = (x_smoothness_score + y_smoothness_score + z_smoothness_score) / 3
-    normalised_smoothness_score = avrg_smoothness / max_smoothness_score
+    normalised_smoothness_score = avrg_smoothness
     
     return decimal.Decimal(normalised_smoothness_score)
 
