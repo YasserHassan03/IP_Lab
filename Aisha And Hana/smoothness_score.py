@@ -46,13 +46,17 @@ with open("/home/ubuntu/Python Scripts and data for Lab 6/xyz.txt", "r") as file
     threading.Timer(5.0, smoothness_score).start()
 
     contents = file.readlines()[1:]  # skip the first line (assuming it's a header)
-    x_vals = [1]
-    y_vals = [1]
-    z_vals = [1]
+    x_vals = ["1"]
+    y_vals = ["1"]
+    z_vals = ["1"]
     for line in contents:
         values = line.strip().split(",")
         if len(values) != 3:  # skip lines that don't contain exactly 3 values
             continue
+        else:
+            for value in values:
+                int(value)
+                #abs(value)
         try:
            decimal.Decimal( x_vals.append(((values[0]))))
            decimal.Decimal(y_vals.append(((values[1]))))
