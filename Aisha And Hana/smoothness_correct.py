@@ -5,12 +5,8 @@ import boto3
 from pprint import pprint
 from boto3.dynamodb.conditions import Key
 from botocore.exceptions import ClientError
-<<<<<<< HEAD
-import decimal 
-import numpy as np
-=======
 import decimal
->>>>>>> cc1a983 (reading from file now works)
+import numpy as np
 
 def smoothness_score(x_vals, y_vals, z_vals, time_interval):
     x_jerk_list = [1,1,1]
@@ -24,32 +20,18 @@ def smoothness_score(x_vals, y_vals, z_vals, time_interval):
     z_smoothness_scores = []
     
     for i in range(1, len(x_vals)):
-<<<<<<< HEAD
-        x_jerk = decimal.Decimal((x_vals[i] - x_vals[i-1]) / (0.1))#replace 0.1 with their value
-        y_jerk = decimal.Decimal((y_vals[i] - y_vals[i-1]) / 0.1)
-        z_jerk = decimal.Decimal((z_vals[i] - z_vals[i-1]) / 0.1)
-
-=======
         x_jerk = decimal.Decimal((x_vals[i] - x_vals[i-1]) / time_interval)
         y_jerk = decimal.Decimal((y_vals[i] - y_vals[i-1]) / time_interval)
         z_jerk = decimal.Decimal((z_vals[i] - z_vals[i-1]) / time_interval)
         
->>>>>>> cc1a983 (reading from file now works)
         x_jerk_list.append(x_jerk)
         y_jerk_list.append(y_jerk)
         z_jerk_list.append(z_jerk)
         
-<<<<<<< HEAD
-        x_jerk_magnitude = np.abs(x_jerk)
-        y_jerk_magnitude = np.abs(y_jerk)
-        z_jerk_magnitude = np.abs(z_jerk)
-
-=======
         x_jerk_magnitude = abs(decimal.Decimal(x_jerk))
         y_jerk_magnitude = abs(decimal.Decimal(y_jerk))
         z_jerk_magnitude = abs(decimal.Decimal(z_jerk))
         
->>>>>>> cc1a983 (reading from file now works)
         x_jerk_magnitudes.append(x_jerk_magnitude)
         y_jerk_magnitudes.append(y_jerk_magnitude)
         z_jerk_magnitudes.append(z_jerk_magnitude)
@@ -132,29 +114,6 @@ def process_file(filename):
         z_vals = [1]
         for line in contents:
             values = line.strip().split(",")
-<<<<<<< HEAD
-            while True:
-                if len(values) != 3:  # skip lines that don't contain exactly 3 values
-                    continue
-                else:
-                    for i in range(len(values)):
-                        values[i] = decimal(values[i])
-                        #values[i] = abs(values[i])
-                try:
-                    x_vals.append(values[0])
-                    y_vals.append(values[1])
-                    z_vals.append(values[2])
-                except ValueError:  # skip lines that contain non-numeric data
-                    continue
-                result = decimal.Decimal((smoothness_score((x_vals), (y_vals), (z_vals))))
-                query_driver ='David'
-                leaderboard=query_and_project_drivers(query_driver)
-                leaderboard_resp = put_leaderboard('David', leaderboard, result)
-                #query_david = 'David'
-                #david=query_david(query_david)
-                #david_resp = put_david_leaderboard('David', david, result)
-                print("Put driver succeeded:")
-=======
             if len(values) != 3:  # skip lines that don't contain exactly 3 values
                 continue
             try:
@@ -179,4 +138,3 @@ if __name__ == '__main__':
     #david=query_david(query_david)
     #david_resp = put_david_leaderboard('David', david, result)
     print("Put driver succeeded:")
->>>>>>> cc1a983 (reading from file now works)
