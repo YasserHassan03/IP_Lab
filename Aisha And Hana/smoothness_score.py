@@ -9,9 +9,9 @@ import decimal
     
 def smoothness_score(x_vals, y_vals, z_vals):
     
-    x_jerk_list = []
-    y_jerk_list = []
-    z_jerk_list = []
+    x_jerk_list = [1]
+    y_jerk_list = [1]
+    z_jerk_list = [1]
 
     if x_vals != None:
         for i in range(1, len(x_vals)):
@@ -26,9 +26,9 @@ def smoothness_score(x_vals, y_vals, z_vals):
             y_jerk_magnitudes = decimal.Decimal((((y_vals[i] - y_vals[i-1]) / 0.1)))
             z_jerk_magnitudes = decimal.Decimal((((z_vals[i] - z_vals[i-1]) / 0.1)))
 
-            average_x_jerk_magnitude = sum(x_jerk_magnitudes) / len(x_jerk_magnitudes)
-            average_y_jerk_magnitude = sum(y_jerk_magnitudes) / len(y_jerk_magnitudes)
-            average_z_jerk_magnitude = sum(z_jerk_magnitudes) / len(z_jerk_magnitudes)
+            average_x_jerk_magnitude =  decimal.Decimal(sum(x_jerk_magnitudes) / len(x_jerk_magnitudes))
+            average_y_jerk_magnitude =  decimal.Decimal(sum(y_jerk_magnitudes) / len(y_jerk_magnitudes))
+            average_z_jerk_magnitude =  decimal.Decimal(sum(z_jerk_magnitudes) / len(z_jerk_magnitudes))
 
 
             x_smoothness_score = 1 / average_x_jerk_magnitude
@@ -45,26 +45,26 @@ def smoothness_score(x_vals, y_vals, z_vals):
 
 # Open the file for reading
 
-with open("/home/ubuntu/Python Scripts and data for Lab 6/data.txt", "r", encoding="utf-8") as file:
-    contents = file.readlines()[1:]  # skip the first line (assuming it's a header)
-    x_vals = []
-    y_vals = []
-    z_vals = []
-    for line in contents:
-        values = line.strip().split(",")
-        if len(values) != 3:  # skip lines that don't contain exactly 3 values
-            continue
-        else:
-            for i in range(len(values)):
-                values[i] = int(values[i])
-                #values[i] = abs(values[i])
-        try:
-            x_vals.append(values[0])
-            y_vals.append(values[1])
-            z_vals.append(values[2])
-        except ValueError:  # skip lines that contain non-numeric data
-            continue
-        result = decimal.Decimal(smoothness_score((x_vals), (y_vals), (z_vals)))
+#with open("/home/ubuntu/Python Scripts and data for Lab 6/data.txt", "r", encoding="utf-8") as file:
+#    contents = file.readlines()[1:]  # skip the first line (assuming it's a header)
+#    x_vals = []
+#    y_vals = []
+#    z_vals = []
+#    for line in contents:
+#        values = line.strip().split(",")
+#        if len(values) != 3:  # skip lines that don't contain exactly 3 values
+#            continue
+#        else:
+#            for i in range(len(values)):
+#                values[i] = int(values[i])
+#                #values[i] = abs(values[i])
+#        try:
+#            x_vals.append(values[0])
+#            y_vals.append(values[1])
+#            z_vals.append(values[2])
+#        except ValueError:  # skip lines that contain non-numeric data
+#            continue
+#        result = decimal.Decimal(smoothness_score((x_vals), (y_vals), (z_vals)))
 
 def put_leaderboard(DriverId,JourneyId, smoothness_score, dynamodb=None):
 
@@ -96,25 +96,47 @@ def query_and_project_drivers(DriverId, dynamodb=None):
         dynamodb = boto3.resource('dynamodb', region_name='us-east-1')
 
     table = dynamodb.Table('Leaderboard')
-    #print(f"Get year, title, genres, and lead actor")
+    print(f"Get year, title, genres, and lead actor")
 
     response = table.query(
-        ProjectionExpression="smoothness_score, JourneyId",
-        ExpressionAttributeNames={"#driverid": "DriverId"},
+        ProjectionExpression="#JourneyId, DriverID,smoothness_score",
+        ExpressionAttributeNames={"#JourneyId": "JourneyId"},
         KeyConditionExpression=
-            Key('Driver').eq(DriverId)
+            Key('DriverId').eq(DriverId)
     )
     return response['Items']
 
 if __name__ == '__main__':
-    query_driver ='David'
-    leaderboard=query_and_project_drivers(query_driver)
-    leaderboard_resp = put_leaderboard('David', leaderboard, result)
-    #query_david = 'David'
-    #david=query_david(query_david)
-    #david_resp = put_david_leaderboard('David', david, result)
-    print("Put driver succeeded:")
-    pprint(leaderboard_resp)
+    with open("/home/ubuntu/Python Scripts and data for Lab 6/data.txt", "r", encoding="utf-8") as file:
+        contents = file.readlines()[1:]  # skip the first line (assuming it's a header)
+        x_vals = [1]
+        y_vals = [1]
+        z_vals = [1]
+        for line in contents:
+            values = line.strip().split(",")
+            while True:
+                if len(values) != 3:  # skip lines that don't contain exactly 3 values
+                    continue
+                else:
+                    for i in range(len(values)):
+                        values[i] = int(values[i])
+                        #values[i] = abs(values[i])
+                try:
+                    x_vals.append(values[0])
+                    y_vals.append(values[1])
+                    z_vals.append(values[2])
+                except ValueError:  # skip lines that contain non-numeric data
+                    continue
+                result = decimal.Decimal(smoothness_score((x_vals), (y_vals), (z_vals)))
+                query_driver ='David'
+                leaderboard=query_and_project_drivers(query_driver)
+                leaderboard_resp = put_leaderboard('David', leaderboard, result)
+                #query_david = 'David'
+                #david=query_david(query_david)
+                #david_resp = put_david_leaderboard('David', david, result)
+                print("Put driver succeeded:")
+                #print(f"\n{movie['year']} : {movie['title']}")
+                #pprint(leaderboard_resp)
 #
 #def put_david_leaderboard(DriverId,JourneyId, normalised_smoothness_score, dynamodb=None):
 #

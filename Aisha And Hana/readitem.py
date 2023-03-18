@@ -18,7 +18,7 @@ def get_leaderboard(DriverId,JourneyId, dynamodb=None):
 
 
 if __name__ == '__main__':
-    Leaderboard = get_leaderboard("David", 1)
+    Leaderboard = get_leaderboard("David","David" )
     if Leaderboard:
         print("Get david succeeded:")
         pprint(Leaderboard)

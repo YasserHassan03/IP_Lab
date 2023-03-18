@@ -5,11 +5,15 @@ def create_leaderboard_table(dynamodb=None):
         dynamodb = boto3.resource('dynamodb',region_name='us-east-1')
 
     table = dynamodb.create_table(
-        TableName='DavidsResults',
+        TableName='Leaderboard',
         KeySchema=[
+        {
+                'AttributeName': 'DriverId',    
+                'KeyType': 'HASH'  # Sort key
+            },
             {
                 'AttributeName': 'JourneyId',
-                'KeyType': 'HASH'  # Partition key
+                'KeyType': 'RANGE'  # Partition key
             }
         ],
         AttributeDefinitions=[
@@ -17,31 +21,9 @@ def create_leaderboard_table(dynamodb=None):
                 'AttributeName': 'JourneyId',
                 'AttributeType': 'N'
             },
-
-        ],
-        ProvisionedThroughput={
-            'ReadCapacityUnits': 10,
-            'WriteCapacityUnits': 10
-        }
-    )
-    return table
-
-def create_leaderboard_table(dynamodb=None):
-    if not dynamodb:
-        dynamodb = boto3.resource('dynamodb',region_name='us-east-1')
-
-    table = dynamodb.create_table(
-        TableName='RobsResults',
-        KeySchema=[
             {
-                'AttributeName': 'JourneyId',
-                'KeyType': 'HASH'  # Partition key
-            }
-        ],
-        AttributeDefinitions=[
-            {
-                'AttributeName': 'JourneyId',
-                'AttributeType': 'N'
+                'AttributeName': 'DriverId',
+                'AttributeType': 'S'
             },
 
         ],
