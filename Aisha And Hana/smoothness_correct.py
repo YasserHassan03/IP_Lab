@@ -233,17 +233,6 @@ if __name__ == '__main__':
         leaderboard_resp = put_leaderboard('David', leaderboard + 1, result)
         leaderboard_resp2 = put_leaderboard('Robert', leaderboard2 + 1, result2)
         
-        query_driver ='David'
-        get = query_driver(query_driver)
-        #get2= get_result2('Robert', leaderboard2 + 1)
-        print(get)
-        #print(get2)
-        #put= put_result('David', leaderboard + 1, result)
-        #put= put_result2('Robert', leaderboard + 1, result)
-        #get= get_leaderboard('David', leaderboard + 1)
-        #get2= get_leaderboard('Robert', leaderboard2 + 1)
-        #print(get)
-        #print(get2)
         print(leaderboard_resp)
         print("Put driver succeeded")
 

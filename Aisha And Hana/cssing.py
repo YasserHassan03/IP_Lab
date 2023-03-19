@@ -7,8 +7,6 @@ from flask import Flask, Markup
 from pprint import pprint
 from boto3.dynamodb.conditions import Key
 
-
-
 def get_item():
     dynamodb = boto3.resource('dynamodb', region_name='us-east-1')
     table = dynamodb.Table('Leaderboard')
