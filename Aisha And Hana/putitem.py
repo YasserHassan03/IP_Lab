@@ -19,6 +19,6 @@ def put_leaderboard(DriverId,JourneyId, smoothness_score, dynamodb=None):
 
 
 if __name__ == '__main__':
-    movie_resp = put_leaderboard("David", 12345, 9876)
+    movie_resp = put_leaderboard("David", 1, 9876)
     print("Put driver succeeded:")
     #pprint(leaderboard_resp)

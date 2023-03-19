@@ -83,14 +83,27 @@ def put_leaderboard(DriverId, JourneyId, smoothness_score, dynamodb=None):
     )
     return DriverId, JourneyId, smoothness_score
 
-
+def put_result(DriverId, JourneyId, smoothness_score, dynamodb=None):
+    if not dynamodb:
+        dynamodb = boto3.resource('dynamodb', region_name='us-east-1')
+    table = dynamodb.Table('Davidsresults')
+    response = table.put_item(
+        Item={
+            'DriverId': DriverId,
+            'JourneyId': JourneyId,
+            'info': {
+                'smoothness_score': smoothness_score
+            }
+        }
+    )
+    return DriverId, JourneyId, smoothness_score
 
 def query_and_project_drivers(DriverId, dynamodb=None):
     if not dynamodb:
         dynamodb = boto3.resource('dynamodb', region_name='us-east-1')
 
     table = dynamodb.Table('Leaderboard')
-    print(f"Get year, title, genres, and lead actor")
+    print(f"Get driver, journeyid, and smoothnessscore")
 
     response = table.query(
         ProjectionExpression="#JourneyId, DriverID,smoothness_score",
@@ -104,8 +117,19 @@ def extract_journey_id(response_dict):
     journey_id = response_dict['Items'][0]['JourneyId']
     return int(journey_id)
 
+def get_leaderboard(DriverId,JourneyId, dynamodb=None):
+    if not dynamodb:
+        dynamodb = boto3.resource('dynamodb', region_name='us-east-1')
 
+    table = dynamodb.Table('Leaderboard')
 
+    try:
+        response = table.get_item(Key={'DriverId': DriverId, 'JourneyId': JourneyId})
+    except ClientError as e:
+        print(e.response['Error']['Message'])
+    else:
+        return response['Item']
+    
 def process_file(filename):
     with open(filename, "r", encoding="utf-8") as file:
         contents = file.readlines()[1:]  # skip the first line (assuming it's a header)
@@ -141,19 +165,31 @@ def delete_item(partition_key_value,sort_key_value):
     return ""
 
 if __name__ == '__main__':
-    x_vals, y_vals, z_vals = process_file("/home/ubuntu/Python Scripts and data for Lab 6/data.txt")
-    result = decimal.Decimal((smoothness_score(x_vals, y_vals, z_vals, 1.0)))
-    query_driver ='David'
-    test=query_and_project_drivers(query_driver)
-    leaderboard = extract_journey_id(test)
-    delete_item(str(leaderboard),query_driver)
+    while True:
+        x_vals, y_vals, z_vals = process_file("/home/ubuntu/Python Scripts and data for Lab 6/data.txt")
+        result = decimal.Decimal((smoothness_score(x_vals, y_vals, z_vals, 1.0)))
+        query_driver ='David'
+        test=query_and_project_drivers(query_driver)
+        leaderboard = extract_journey_id(test)
+        store_value = put_result('David', leaderboard + 1, result)
+        delete_item(str(leaderboard),query_driver)
 
+        x_vals, y_vals, z_vals = process_file("/home/ubuntu/Python Scripts and data for Lab 6/data.txt")
+        result2 = decimal.Decimal((smoothness_score(x_vals, y_vals, z_vals, 1.0)))
+        query_driver2 ='Robert'
+        test2=query_and_project_drivers(query_driver2)
+        leaderboard2 = extract_journey_id(test2)
+        store_value2 = put_result('Robert', leaderboard2 + 1, result2)
+        delete_item(str(leaderboard2),query_driver2)
 
+        leaderboard_resp = put_leaderboard('David', leaderboard + 1, result)
+        leaderboard_resp2 = put_leaderboard('Robert', leaderboard2 + 1, result2)
+        #put= put_result('David', leaderboard + 1, result)
+        get= get_leaderboard('David', leaderboard + 1)
+        get2= get_leaderboard('Robert', leaderboard2 + 1)
+        print(get)
+        print(get2)
+        print(leaderboard_resp)
+        print("Put driver succeeded")
 
-    leaderboard_resp = put_leaderboard('David', leaderboard + 1, result)
-    #print(leaderboard)
-    #print(result)
-    #query_david = 'David'
-    #david=query_david(query_david)
-    #david_resp = put_david_leaderboard('David', david, result)
-    print("Put driver succeeded:")
+        time.sleep(5)

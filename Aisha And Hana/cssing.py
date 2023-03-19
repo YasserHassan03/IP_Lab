@@ -6,31 +6,33 @@ from flask import Response
 from flask import Flask, Markup
 
 
-dynamodb = boto3.resource('dynamodb', region_name='us-east-1')
+def get_item():
+    dynamodb = boto3.resource('dynamodb', region_name='us-east-1')
+    table = dynamodb.Table('Leaderboard')
 
-table = dynamodb.Table('Leaderboard')
+    response = table.scan()
+    data = response['Items']
 
-response = table.scan()
-data = response['Items']
-    
-    
-while 'LastEvaluatedKey' in response:
-    response = table.scan(ExclusiveStartKey=response['LastEvaluatedKey'])
-    data.extend(response['Items']) 
+    while 'LastEvaluatedKey' in response:
+        response = table.scan(ExclusiveStartKey=response['LastEvaluatedKey'])
+        data.extend(response['Items']) 
 
-    
-obj = pd.DataFrame(json.loads(data))
-#obj = obj.sort_values(by=['smoothness'], ascending=False)
+    obj = pd.DataFrame(json.loads(data))
+    #obj = obj.sort_values(by=['smoothness'], ascending=False)
+    return obj
 
 app = Flask(__name__)
 app.route('/')
+@app.route('/')
 def hello_world():
-    return obj.to_html(header="true", table_id="table")
-
+    html_table = get_item()
+    return html_table
+    
 # ...
 @app.route('/formatting')
 def bob():
     # generate the HTML table string
+    obj = hello_world()
     table_html = obj.to_html(header="true", table_id="table", classes="table table-striped table-hover", 
                                border="0", justify="center",
                                
@@ -66,7 +68,10 @@ def bob():
             }
         </style>
         '''
+    
+    
     table_html = f"<html><head><meta http-equiv='refresh' content='10'><title>Drivers Leaderboard</title></head><body><h1 style='text-align:center;'>Drivers Leaderboard</h1>{table_html}</body></html>"
+    #hello=hello_world()
     return str(Markup(css + table_html))
 
 
