@@ -4,6 +4,9 @@ import pandas as pd
 from dynamodb_json import json_util as json
 from flask import Response
 from flask import Flask, Markup
+from pprint import pprint
+from boto3.dynamodb.conditions import Key
+
 
 
 def get_item():
@@ -70,9 +73,48 @@ def bob():
         '''
     
     
-    table_html = f"<html><head><meta http-equiv='refresh' content='10'><title>Drivers Leaderboard</title></head><body><h1 style='text-align:center;'>Drivers Leaderboard</h1>{table_html}</body></html>"
-    #hello=hello_world()
+    table_html = ftable_html = f"<html><head><meta http-equiv='refresh' content='10'><title>Drivers Leaderboard</title></head><body><h1 style='text-align:center;'>Drivers Leaderboard</h1>{table_html}<p align=\"center\"><a href=formatting/David ><button class=grey style=\"height:75px;width:150px\">David's Resutls</button></a></p><p align=\"center\"><a href=formatting/Robert ><button class=grey style=\"height:75px;width:150px\">Robert's Resutls</button></a></p></body></html>"
+
     return str(Markup(css + table_html))
+
+@app.route('/formatting/<DriverId>')
+def query_and_project_movies(DriverId, dynamodb=None):
+    if DriverId == 'Robert':
+        DriverId = 'Rob'
+
+    if not dynamodb:
+        dynamodb = boto3.resource('dynamodb', region_name='us-east-1')
+
+    table = dynamodb.Table(DriverId+'sresults')
+    print(f"Get year, title, genres, and lead actor")
+    if DriverId == 'Rob':
+        DriverId = 'Robert'
+    response = table.query(
+        ProjectionExpression="#DriverId, JourneyId, smoothness_score",
+        ExpressionAttributeNames={"#DriverId": DriverId},
+        KeyConditionExpression=
+            Key('DriverId').eq(DriverId)
+    )
+    return response['Items']
+
+# @app.route('/formatting/robdb')
+
+# def query_and_project_movies2(DriverId, dynamodb=None):
+#     if not dynamodb:
+#         dynamodb = boto3.resource('dynamodb', region_name='us-east-1')
+
+#     table = dynamodb.Table('Davidsresults')
+#     print(f"Get year, title, genres, and lead actor")
+
+#     response = table.query(
+#         ProjectionExpression="#DriverId, JourneyId, smoothness_score",
+#         ExpressionAttributeNames={"#DriverId": "DriverId"},
+#         KeyConditionExpression=
+#             Key('DriverId').eq(DriverId)
+#     )
+#     return response['Items']
+
+
 
 if __name__ == "__main__":
     app.debug = True
