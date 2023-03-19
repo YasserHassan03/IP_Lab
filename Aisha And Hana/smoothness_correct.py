@@ -123,6 +123,22 @@ def process_file(filename):
             except ValueError:  # skip lines that contain non-numeric data
                 continue
     return x_vals, y_vals, z_vals
+def delete_item(partition_key_value,sort_key_value):
+    
+
+    # Create an instance of the DynamoDB client
+    dynamodb = boto3.client('dynamodb', region_name='us-east-1')
+
+    # Define the table name and the key of the item to be deleted
+    table_name = 'Leaderboard'
+    key_to_delete = {'JourneyId': {'N': partition_key_value}, 'DriverId': {'S': sort_key_value}}
+
+    # Delete the item from the table
+    dynamodb.delete_item(
+        TableName=table_name,
+        Key=key_to_delete
+    )   
+    return ""
 
 if __name__ == '__main__':
     x_vals, y_vals, z_vals = process_file("/home/ubuntu/Python Scripts and data for Lab 6/data.txt")
@@ -130,6 +146,9 @@ if __name__ == '__main__':
     query_driver ='David'
     test=query_and_project_drivers(query_driver)
     leaderboard = extract_journey_id(test)
+    delete_item(str(leaderboard),query_driver)
+
+
 
     leaderboard_resp = put_leaderboard('David', leaderboard + 1, result)
     #print(leaderboard)
