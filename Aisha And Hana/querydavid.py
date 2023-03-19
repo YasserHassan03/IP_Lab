@@ -3,24 +3,25 @@ import boto3
 from boto3.dynamodb.conditions import Key
 
 
-def query_and_project_movies(actor, dynamodb=None):
+def query_and_project_movies(DriverId, dynamodb=None):
     if not dynamodb:
         dynamodb = boto3.resource('dynamodb', region_name='us-east-1')
 
-    table = dynamodb.Table('Movies')
+    table = dynamodb.Table('Davidsresults')
     print(f"Get year, title, genres, and lead actor")
 
     response = table.query(
-        ProjectionExpression="#yr, title, genres, lead_actor",
-        ExpressionAttributeNames={"#yr": "year"},
+        ProjectionExpression="#DriverId, JourneyId, smoothness_score",
+        ExpressionAttributeNames={"#DriverId": "DriverId"},
         KeyConditionExpression=
-            Key('lead_actor').eq(actor)
+            Key('DriverId').eq(DriverId)
     )
     return response['Items']
 
 if __name__ == '__main__':
-    query_actor = 'Tom Hanks'
+    query_actor = 'David'
     print(f"Get movies from {query_actor}")
     movies = query_and_project_movies(query_actor)
-    for movie in movies:
-        print(f"\n{movie['year']} : {movie['title']}")
+    print(movies)
+    #for movie in movies:
+    #    print(f"\n{movie['DriverId']} : {movie['DriverId']}")

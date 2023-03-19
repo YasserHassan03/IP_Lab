@@ -98,6 +98,21 @@ def put_result(DriverId, JourneyId, smoothness_score, dynamodb=None):
     )
     return DriverId, JourneyId, smoothness_score
 
+def put_result2(DriverId, JourneyId, smoothness_score, dynamodb=None):
+    if not dynamodb:
+        dynamodb = boto3.resource('dynamodb', region_name='us-east-1')
+    table = dynamodb.Table('Robsresults')
+    response = table.put_item(
+        Item={
+            'DriverId': DriverId,
+            'JourneyId': JourneyId,
+            'info': {
+                'smoothness_score': smoothness_score
+            }
+        }
+    )
+    return DriverId, JourneyId, smoothness_score
+
 def query_and_project_drivers(DriverId, dynamodb=None):
     if not dynamodb:
         dynamodb = boto3.resource('dynamodb', region_name='us-east-1')
@@ -129,6 +144,28 @@ def get_leaderboard(DriverId,JourneyId, dynamodb=None):
         print(e.response['Error']['Message'])
     else:
         return response['Item']
+    
+def get_result(DriverId,JourneyId, dynamodb=None):
+    if not dynamodb:
+        dynamodb = boto3.resource('dynamodb', region_name='us-east-1')
+    table = dynamodb.Table('Davidsresults')
+    try:
+        response = table.get_item(Key={'DriverId': DriverId, 'JourneyId': JourneyId})
+    except ClientError as e:
+        print(e.response['Error']['Message'])
+    else:
+        return response['Item']     
+
+def get_result2(DriverId,JourneyId, dynamodb=None):
+    if not dynamodb:
+        dynamodb = boto3.resource('dynamodb', region_name='us-east-1')
+    table = dynamodb.Table('Robsresults')
+    try:
+        response = table.get_item(Key={'DriverId': DriverId, 'JourneyId': JourneyId})
+    except ClientError as e:
+        print(e.response['Error']['Message'])
+    else:
+        return response['Item']     
     
 def process_file(filename):
     with open(filename, "r", encoding="utf-8") as file:
@@ -163,6 +200,17 @@ def delete_item(partition_key_value,sort_key_value):
         Key=key_to_delete
     )   
     return ""
+def query_driver(DriverId, dynamodb=None):
+    if not dynamodb:
+        dynamodb = boto3.resource('dynamodb', region_name='us-east-1')
+
+    table = dynamodb.Table('Davidsresults')
+    response = table.query(
+        KeyConditionExpression=Key('DriverId').eq(DriverId)
+    )
+    return response['Items']
+
+
 
 if __name__ == '__main__':
     while True:
@@ -178,18 +226,25 @@ if __name__ == '__main__':
         result2 = decimal.Decimal((smoothness_score(x_vals, y_vals, z_vals, 1.0)))
         query_driver2 ='Robert'
         test2=query_and_project_drivers(query_driver2)
+        put= put_result2('Robert', leaderboard + 1, result)
         leaderboard2 = extract_journey_id(test2)
         store_value2 = put_result('Robert', leaderboard2 + 1, result2)
         delete_item(str(leaderboard2),query_driver2)
-
         leaderboard_resp = put_leaderboard('David', leaderboard + 1, result)
         leaderboard_resp2 = put_leaderboard('Robert', leaderboard2 + 1, result2)
-        #put= put_result('David', leaderboard + 1, result)
-        get= get_leaderboard('David', leaderboard + 1)
-        get2= get_leaderboard('Robert', leaderboard2 + 1)
+        
+        query_driver ='David'
+        get = query_driver(query_driver)
+        #get2= get_result2('Robert', leaderboard2 + 1)
         print(get)
-        print(get2)
+        #print(get2)
+        #put= put_result('David', leaderboard + 1, result)
+        #put= put_result2('Robert', leaderboard + 1, result)
+        #get= get_leaderboard('David', leaderboard + 1)
+        #get2= get_leaderboard('Robert', leaderboard2 + 1)
+        #print(get)
+        #print(get2)
         print(leaderboard_resp)
         print("Put driver succeeded")
 
-        time.sleep(5)
+        time.sleep(7)

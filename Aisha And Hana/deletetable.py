@@ -4,7 +4,7 @@ def delete_movie_table(dynamodb=None):
     if not dynamodb:
         dynamodb = boto3.resource('dynamodb', region_name="us-east-1")
 
-    table = dynamodb.Table('Leaderboard')
+    table = dynamodb.Table('DavidsResults')
     table.delete()
 
 

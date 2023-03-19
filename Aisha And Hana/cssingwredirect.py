@@ -69,7 +69,8 @@ def bob():
         </style>
         '''
     
-    
+    #<a href="{{http://ec2-3-90-81-83.compute-1.amazonaws.com:5000/formatting/David}}" >Login</a>
+
     table_html = f"<html><head><meta http-equiv='refresh' content='10'><title>Drivers Leaderboard</title></head><body><h1 style='text-align:center;'>Drivers Leaderboard</h1>{table_html}</body></html>"
     #hello=hello_world()
     return str(Markup(css + table_html))
@@ -77,4 +78,3 @@ def bob():
 if __name__ == "__main__":
     app.debug = True
     app.run(host="0.0.0.0", port=5000)
-

@@ -5,7 +5,7 @@ def put_leaderboard(DriverId,JourneyId, smoothness_score, dynamodb=None):
     if not dynamodb:
         dynamodb = boto3.resource('dynamodb', region_name='us-east-1')
 
-    table = dynamodb.Table('Leaderboard')
+    table = dynamodb.Table('Davidsresults')
     response = table.put_item(
        Item={
             'DriverId': DriverId,
