@@ -131,7 +131,7 @@ if __name__ == '__main__':
     test=query_and_project_drivers(query_driver)
     leaderboard = extract_journey_id(test)
 
-    leaderboard_resp = put_leaderboard('David', leaderboard, result)
+    leaderboard_resp = put_leaderboard('David', leaderboard + 1, result)
     #print(leaderboard)
     #print(result)
     #query_david = 'David'
