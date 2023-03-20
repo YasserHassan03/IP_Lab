@@ -9,6 +9,7 @@ import decimal
 import numpy as np
 
 def smoothness_score(x_vals, y_vals, z_vals, time_interval):
+    #x_vals = x_vals
     x_jerk_list = [1,1,1]
     y_jerk_list = [1,1,1]
     z_jerk_list = [1,1,1]
@@ -218,7 +219,7 @@ def query_driver2(DriverId, dynamodb=None):
     if not dynamodb:
         dynamodb = boto3.resource('dynamodb', region_name='us-east-1')
 
-    table = dynamodb.Table('Robsresults')
+    table = dynamodb.Table('Robertsresults')
     response = table.query(
         KeyConditionExpression=Key('DriverId').eq(DriverId)
     )
@@ -228,31 +229,35 @@ def query_driver2(DriverId, dynamodb=None):
 if __name__ == '__main__':
     while True:
         x_vals, y_vals, z_vals = process_file("/home/ubuntu/Python Scripts and data for Lab 6/data.txt")
-        result = decimal.Decimal((smoothness_score(x_vals, y_vals, z_vals, 1.0)))
-        resultround = round(result, 6)
-        resultscale= (resultround * 1000000)
-        query_driver ='David'
-        test=query_and_project_drivers(query_driver)
-        leaderboard = extract_journey_id(test)
-        print(leaderboard)
-        print(test)
-        store_value = put_result('David', leaderboard + 1, resultscale)
-        leaderboard_resp = put_leaderboard('David', leaderboard + 1, resultscale)
-        delete_item(str(leaderboard),query_driver)
+        if x_vals != None:
 
-        x_vals, y_vals, z_vals = process_file("/home/ubuntu/Python Scripts and data for Lab 6/data.txt")
-        result2 = decimal.Decimal((smoothness_score(x_vals, y_vals, z_vals, 1.0)))
-        result2round = round(result, 6)
-        resultscale2= (result2round * 1000000)
-        query_driver2 ='Robert'
-        test2=query_and_project_drivers(query_driver2)
-        #put= put_result2('Robert', leaderboard + 1, result)
-        leaderboard2 = extract_journey_id(test2)
-        store_value2 = put_result2('Robert', leaderboard2 + 1, resultscale2)
-        leaderboard_resp2 = put_leaderboard('Robert', leaderboard2 + 1, resultscale2)
-        delete_item(str(leaderboard2),query_driver2)
-        
-        print(leaderboard_resp)
-        print("Put driver succeeded")
+            result = decimal.Decimal((smoothness_score(x_vals, y_vals, z_vals, 1.0)))
+            resultround = round(result, 6)
+            resultscale= (resultround * 1000000)
+            query_driver ='David'
+            test=query_and_project_drivers(query_driver)
+            leaderboard = extract_journey_id(test)
+            print(leaderboard)
+            print(test)
+            store_value = put_result('David', leaderboard + 1, resultscale)
+            leaderboard_resp = put_leaderboard('David', leaderboard + 1, resultscale)
+            delete_item(str(leaderboard),query_driver)
 
+            x_vals, y_vals, z_vals = process_file("/home/ubuntu/Python Scripts and data for Lab 6/data.txt")
+            result2 = decimal.Decimal((smoothness_score(x_vals, y_vals, z_vals, 1.0)))
+            result2round = round(result, 6)
+            resultscale2= (result2round * 1000000)
+            query_driver2 ='Robert'
+            test2=query_and_project_drivers(query_driver2)
+            #put= put_result2('Robert', leaderboard + 1, result)
+            leaderboard2 = extract_journey_id(test2)
+            store_value2 = put_result2('Robert', leaderboard2 + 1, resultscale2)
+            leaderboard_resp2 = put_leaderboard('Robert', leaderboard2 + 1, resultscale2)
+            delete_item(str(leaderboard2),query_driver2)
+
+            print(leaderboard_resp)
+            print("Put driver succeeded")
+        else:
+            continue
         time.sleep(5)
+        print('james is a liar')
