@@ -2,6 +2,8 @@ import subprocess
 import socket
 import sys
 import re
+import decimal
+
 
 def send_on_jtag():
     #score=0 #initialize score
@@ -13,7 +15,7 @@ def send_on_jtag():
     # subprocess allows python to run a bash command*    
     send=-1# don't start journey til start is pressed
     while True: #possibly print a special key from fpga if button is pressed to start/stop loop
-        server_name='3.239.44.127'
+        server_name='54.174.33.34'
         server_port=12000
         client_socket=socket.socket(socket.AF_INET,socket.SOCK_STREAM)
         client_socket.connect((server_name,server_port))   

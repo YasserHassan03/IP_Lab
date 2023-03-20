@@ -49,6 +49,34 @@ int start_stop(int button){
 		return 0;
 	}
 }
+int start(int button){
+	if (button==1){
+		//printf('start journey\r');
+		IOWR_ALTERA_AVALON_PIO_DATA(HEX_5_BASE,0b0010010);
+		IOWR_ALTERA_AVALON_PIO_DATA(HEX_4_BASE,0b0000111);
+		IOWR_ALTERA_AVALON_PIO_DATA(HEX_3_BASE,0b0001000);
+		IOWR_ALTERA_AVALON_PIO_DATA(HEX_2_BASE,0b1001110);
+		IOWR_ALTERA_AVALON_PIO_DATA(HEX_1_BASE,0b0000111);
+		IOWR_ALTERA_AVALON_PIO_DATA(HEX_0_BASE,0b1111111);
+		return 1;
+
+	}
+	return 0;
+}
+int stop(int button){
+	if (button==2){
+		//printf('stop journey\r');
+		IOWR_ALTERA_AVALON_PIO_DATA(HEX_5_BASE,0b0001110);
+		IOWR_ALTERA_AVALON_PIO_DATA(HEX_4_BASE,0b1111001);
+		IOWR_ALTERA_AVALON_PIO_DATA(HEX_3_BASE,0b1001000);
+		IOWR_ALTERA_AVALON_PIO_DATA(HEX_2_BASE,0b1111001);
+		IOWR_ALTERA_AVALON_PIO_DATA(HEX_1_BASE,0b0010010);
+		IOWR_ALTERA_AVALON_PIO_DATA(HEX_0_BASE,0b0001001);
+		return 1;
+
+	}
+	return 0;
+}
 void Display_hex(char* text){
     //enumerate each hex
 
