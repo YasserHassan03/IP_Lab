@@ -35,10 +35,10 @@ def send_on_jtag():
                 send=-1
             if send>-1:
                 vals = vals.split('\r')       #formatting
-                del vals[0:5]    
-                vals.pop()
-                vals.pop()
-                vals.pop()
+               # del vals[0:5]    
+                #vals.pop()
+               # vals.pop()
+               # vals.pop()
                 vals= ''.join(vals)                                 # split the string according to the defined delimiters <-->
                 #file.write(vals.decode("utf-8")  )   
                 client_socket.send(vals.encode())                                  # return the data within the delimtiers <-->

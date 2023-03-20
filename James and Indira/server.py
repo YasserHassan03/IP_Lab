@@ -14,7 +14,7 @@ def smoothness_score(x_vals, y_vals, z_vals, time_interval):
     x_smoothness_scores = []
     y_smoothness_scores = []
     z_smoothness_scores = []
-    
+
     for i in range(1, len(x_vals)):
         x_jerk = decimal.Decimal((x_vals[i] - x_vals[i-1]) / time_interval)
         y_jerk = decimal.Decimal((y_vals[i] - y_vals[i-1]) / time_interval)
@@ -68,6 +68,7 @@ def smoothness_score(x_vals, y_vals, z_vals, time_interval):
     normalised_smoothness_score = avrg_smoothness / max_smoothness_score
     
     return decimal.Decimal(normalised_smoothness_score)
+
 def process_file(filename):
     with open(filename, "r", encoding="utf-8") as file:
         contents = file.readlines()[1:]  # skip the first line (assuming it's a header)
@@ -84,7 +85,9 @@ def process_file(filename):
                 z_vals.append(int(values[2]))
             except ValueError:  # skip lines that contain non-numeric data
                 continue
+    file.close()
     return x_vals, y_vals, z_vals
+
 
     #file.close()
 
@@ -110,22 +113,24 @@ cmsg=''
 #print(score())
 
  #send score to client 
-with open ('data.txt','w',newline='\r') as file:
-    while True:   
-        connection_socket,caddr=welcome_socket.accept()
-        if(len(cmsg)>0):
-            x_vals, y_vals, z_vals = process_file("data.txt")
+
+while True:   
+    connection_socket,caddr=welcome_socket.accept()
+    if(len(cmsg)>0):
+        x_vals, y_vals, z_vals = process_file("data.txt")
+        if len(x_vals) or len(y_vals) or len(z_vals) == None:
             resultround = decimal.Decimal((smoothness_score(x_vals, y_vals, z_vals, 1.0)))
             resultround = round(resultround, 6)
             resultscale= (resultround * 1000000)
             print(resultscale)
-        connection_socket.send(str(resultscale).encode())
-        cmsg=connection_socket.recv(1024)     
-        cmsg=cmsg.decode()
-        print(cmsg.split('\r'))
+    connection_socket.send(str(resultscale).encode())
+    cmsg=connection_socket.recv(1024)     
+    cmsg=cmsg.decode()
+    print(cmsg.split('\r'))
+    with open ('data.txt','w+',newline='\r') as file:
         file.write(cmsg)
+        file.close()
+    
 
-        
-
-        
+    
         
