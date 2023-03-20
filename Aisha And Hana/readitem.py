@@ -8,7 +8,7 @@ def get_leaderboard(DriverId,JourneyId, dynamodb=None):
     if not dynamodb:
         dynamodb = boto3.resource('dynamodb', region_name='us-east-1')
 
-    table = dynamodb.Table('Leaderboard')
+    table = dynamodb.Table('Davidsresults')
 
     try:
         response = table.get_item(Key={'DriverId': DriverId, 'JourneyId': JourneyId})
