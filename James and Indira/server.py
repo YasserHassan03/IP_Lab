@@ -95,7 +95,7 @@ print("We're in server now..")
 #deadfile.close()
 #clear file for new data
 #select port for server
-score = '000000' #test score val initial
+resultscale = '000000' #test score val initial
 server_port=12000
 #create welcoming socket
 welcome_socket=socket.socket(socket.AF_INET,socket.SOCK_STREAM)
@@ -104,6 +104,7 @@ welcome_socket.bind(('0.0.0.0',server_port))
 welcome_socket.listen(1)
 #ready message
 print("server running on port: ",server_port)
+cmsg=''
 #now server side loop
 
 #print(score())
@@ -112,16 +113,17 @@ print("server running on port: ",server_port)
 with open ('data.txt','w',newline='\r') as file:
     while True:   
         connection_socket,caddr=welcome_socket.accept()
+        if(len(cmsg)>0):
+            x_vals, y_vals, z_vals = process_file("data.txt")
+            resultround = decimal.Decimal((smoothness_score(x_vals, y_vals, z_vals, 1.0)))
+            resultround = round(resultround, 6)
+            resultscale= (resultround * 1000000)
+            print(resultscale)
+        connection_socket.send(str(resultscale).encode())
         cmsg=connection_socket.recv(1024)     
         cmsg=cmsg.decode()
         print(cmsg.split('\r'))
         file.write(cmsg)
-        if(cmsg.len()>0):
-            x_vals, y_vals, z_vals = process_file("data.txt")
-            resultround = decimal.Decimal((smoothness_score(x_vals, y_vals, z_vals, 1.0)))
-            resultround = round(resultround, 6)
-            resultscale= (score * 1000000)
-        connection_socket.send(resultscale.encode())
 
         
 
