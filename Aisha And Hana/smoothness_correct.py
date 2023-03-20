@@ -45,9 +45,14 @@ def smoothness_score(x_vals, y_vals, z_vals, time_interval):
             y_jerk_window = y_jerk_magnitudes[start:end]
             z_jerk_window = z_jerk_magnitudes[start:end]
             
-            x_smoothness_score = 1 / decimal.Decimal(np.mean(x_jerk_window))
-            y_smoothness_score = 1 / decimal.Decimal(np.mean(y_jerk_window))
-            z_smoothness_score = 1 / decimal.Decimal(np.mean(z_jerk_window))
+            try:
+                x_smoothness_score = 1 / decimal.Decimal(np.mean(x_jerk_window))
+                y_smoothness_score = 1 / decimal.Decimal(np.mean(y_jerk_window))
+                z_smoothness_score = 1 / decimal.Decimal(np.mean(z_jerk_window))
+            except:
+                x_smoothness_score = 0
+                y_smoothness_score = 0
+                z_smoothness_score = 0
 
             x_smoothness_scores.append(x_smoothness_score)
             y_smoothness_scores.append(y_smoothness_score)
@@ -101,7 +106,7 @@ def put_result(DriverId, JourneyId, smoothness_score, dynamodb=None):
 def put_result2(DriverId, JourneyId, smoothness_score, dynamodb=None):
     if not dynamodb:
         dynamodb = boto3.resource('dynamodb', region_name='us-east-1')
-    table = dynamodb.Table('Robsresults')
+    table = dynamodb.Table('Robertsresults')
     response = table.put_item(
         Item={
             'DriverId': DriverId,
@@ -159,7 +164,7 @@ def get_result(DriverId,JourneyId, dynamodb=None):
 def get_result2(DriverId,JourneyId, dynamodb=None):
     if not dynamodb:
         dynamodb = boto3.resource('dynamodb', region_name='us-east-1')
-    table = dynamodb.Table('Robsresults')
+    table = dynamodb.Table('Robertsresults')
     try:
         response = table.get_item(Key={'DriverId': DriverId, 'JourneyId': JourneyId})
     except ClientError as e:
@@ -214,7 +219,7 @@ def query_driver(DriverId, dynamodb=None):
 
 if __name__ == '__main__':
     while True:
-        x_vals, y_vals, z_vals = process_file("/home/ubuntu/Python Scripts and data for Lab 6/data.txt")
+        x_vals, y_vals, z_vals = process_file("/home/ubuntu/Aisha And Hana/data.txt")
         result = decimal.Decimal((smoothness_score(x_vals, y_vals, z_vals, 1.0)))
         query_driver ='David'
         test=query_and_project_drivers(query_driver)
@@ -222,7 +227,7 @@ if __name__ == '__main__':
         store_value = put_result('David', leaderboard + 1, result)
         delete_item(str(leaderboard),query_driver)
 
-        x_vals, y_vals, z_vals = process_file("/home/ubuntu/Python Scripts and data for Lab 6/data.txt")
+        x_vals, y_vals, z_vals = process_file("/home/ubuntu/Aisha And Hana/data.txt")
         result2 = decimal.Decimal((smoothness_score(x_vals, y_vals, z_vals, 1.0)))
         query_driver2 ='Robert'
         test2=query_and_project_drivers(query_driver2)
