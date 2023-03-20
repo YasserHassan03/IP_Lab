@@ -228,7 +228,7 @@ def query_driver2(DriverId, dynamodb=None):
 
 if __name__ == '__main__':
     while True:
-        x_vals, y_vals, z_vals = process_file("/home/ubuntu/Aisha And Hana/data.txt")
+        x_vals, y_vals, z_vals = process_file("/home/ubuntu/Python Scripts and data for Lab 6/data.txt")
         if x_vals != None:
 
             result = decimal.Decimal((smoothness_score(x_vals, y_vals, z_vals, 1.0)))
@@ -239,11 +239,12 @@ if __name__ == '__main__':
             leaderboard = extract_journey_id(test)
             print(leaderboard)
             print(test)
+            print(type(resultscale))
             store_value = put_result('David', leaderboard + 1, resultscale)
             leaderboard_resp = put_leaderboard('David', leaderboard + 1, resultscale)
             delete_item(str(leaderboard),query_driver)
 
-            x_vals, y_vals, z_vals = process_file("/home/ubuntu/Aisha And Hana/data.txt")
+            x_vals, y_vals, z_vals = process_file("/home/ubuntu/Python Scripts and data for Lab 6/data.txt")
             result2 = decimal.Decimal((smoothness_score(x_vals, y_vals, z_vals, 1.0)))
             result2round = round(result, 6)
             resultscale2= (result2round * 1000000)
@@ -259,5 +260,5 @@ if __name__ == '__main__':
             print("Put driver succeeded")
         else:
             continue
-        time.sleep(5)
+        time.sleep(3)
         print('james is a liar')
