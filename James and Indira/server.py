@@ -5,69 +5,72 @@ import threading
 import decimal
 import numpy as np
 def smoothness_score(x_vals, y_vals, z_vals, time_interval):
-    x_jerk_list = [1,1,1]
-    y_jerk_list = [1,1,1]
-    z_jerk_list = [1,1,1]
-    x_jerk_magnitudes = [1,1,1]
-    y_jerk_magnitudes = [1,1,1]
-    z_jerk_magnitudes = [1,1,1]
-    x_smoothness_scores = []
-    y_smoothness_scores = []
-    z_smoothness_scores = []
+    if x_vals and y_vals and z_vals != []:
+        x_jerk_list = [1,1,1]
+        y_jerk_list = [1,1,1]
+        z_jerk_list = [1,1,1]
+        x_jerk_magnitudes = [1,1,1]
+        y_jerk_magnitudes = [1,1,1]
+        z_jerk_magnitudes = [1,1,1]
+        x_smoothness_scores = []
+        y_smoothness_scores = []
+        z_smoothness_scores = []
 
-    for i in range(1, len(x_vals)):
-        x_jerk = decimal.Decimal((x_vals[i] - x_vals[i-1]) / time_interval)
-        y_jerk = decimal.Decimal((y_vals[i] - y_vals[i-1]) / time_interval)
-        z_jerk = decimal.Decimal((z_vals[i] - z_vals[i-1]) / time_interval)
-        
-        x_jerk_list.append(x_jerk)
-        y_jerk_list.append(y_jerk)
-        z_jerk_list.append(z_jerk)
-        
-        x_jerk_magnitude = abs(decimal.Decimal(x_jerk))
-        y_jerk_magnitude = abs(decimal.Decimal(y_jerk))
-        z_jerk_magnitude = abs(decimal.Decimal(z_jerk))
-        
-        x_jerk_magnitudes.append(x_jerk_magnitude)
-        y_jerk_magnitudes.append(y_jerk_magnitude)
-        z_jerk_magnitudes.append(z_jerk_magnitude)
-
-        window_size = 5
-
-        for i in range(len(x_jerk_magnitudes)):
-            start = max(0, i-window_size)
-            end = min(len(x_jerk_magnitudes), i+window_size)
-            x_jerk_window = x_jerk_magnitudes[start:end]
-            y_jerk_window = y_jerk_magnitudes[start:end]
-            z_jerk_window = z_jerk_magnitudes[start:end]
+        for i in range(1, len(x_vals)):
+            x_jerk = decimal.Decimal((x_vals[i] - x_vals[i-1]) / time_interval)
+            y_jerk = decimal.Decimal((y_vals[i] - y_vals[i-1]) / time_interval)
+            z_jerk = decimal.Decimal((z_vals[i] - z_vals[i-1]) / time_interval)
             
-            try:
-                x_smoothness_score = 1 / decimal.Decimal(np.mean(x_jerk_window))
-                y_smoothness_score = 1 / decimal.Decimal(np.mean(y_jerk_window))
-                z_smoothness_score = 1 / decimal.Decimal(np.mean(z_jerk_window))
-            except:
-                x_smoothness_score = 1
-                y_smoothness_score = 1
-                z_smoothness_score = 1
+            x_jerk_list.append(x_jerk)
+            y_jerk_list.append(y_jerk)
+            z_jerk_list.append(z_jerk)
+            
+            x_jerk_magnitude = abs(decimal.Decimal(x_jerk))
+            y_jerk_magnitude = abs(decimal.Decimal(y_jerk))
+            z_jerk_magnitude = abs(decimal.Decimal(z_jerk))
+            
+            x_jerk_magnitudes.append(x_jerk_magnitude)
+            y_jerk_magnitudes.append(y_jerk_magnitude)
+            z_jerk_magnitudes.append(z_jerk_magnitude)
 
-            x_smoothness_scores.append(x_smoothness_score)
-            y_smoothness_scores.append(y_smoothness_score)
-            z_smoothness_scores.append(z_smoothness_score)
+            window_size = 5
+
+            for i in range(len(x_jerk_magnitudes)):
+                start = max(0, i-window_size)
+                end = min(len(x_jerk_magnitudes), i+window_size)
+                x_jerk_window = x_jerk_magnitudes[start:end]
+                y_jerk_window = y_jerk_magnitudes[start:end]
+                z_jerk_window = z_jerk_magnitudes[start:end]
+                
+                try:
+                    x_smoothness_score = 1 / decimal.Decimal(np.mean(x_jerk_window))
+                    y_smoothness_score = 1 / decimal.Decimal(np.mean(y_jerk_window))
+                    z_smoothness_score = 1 / decimal.Decimal(np.mean(z_jerk_window))
+                except:
+                    x_smoothness_score = 1
+                    y_smoothness_score = 1
+                    z_smoothness_score = 1
+
+                x_smoothness_scores.append(x_smoothness_score)
+                y_smoothness_scores.append(y_smoothness_score)
+                z_smoothness_scores.append(z_smoothness_score)
+            
+            
+        average_x_smoothness = decimal.Decimal(np.mean(x_smoothness_scores))
+        average_y_smoothness = decimal.Decimal(np.mean(y_smoothness_scores))
+        average_z_smoothness = decimal.Decimal(np.mean(z_smoothness_scores))
         
+        x_smoothness_score = 1 / average_x_smoothness
+        y_smoothness_score = 1 / average_y_smoothness
+        z_smoothness_score = 1 / average_z_smoothness
         
-    average_x_smoothness = decimal.Decimal(np.mean(x_smoothness_scores))
-    average_y_smoothness = decimal.Decimal(np.mean(y_smoothness_scores))
-    average_z_smoothness = decimal.Decimal(np.mean(z_smoothness_scores))
-    
-    x_smoothness_score = 1 / average_x_smoothness
-    y_smoothness_score = 1 / average_y_smoothness
-    z_smoothness_score = 1 / average_z_smoothness
-    
-    max_smoothness_score = 1 / decimal.Decimal(0.1)  # The maximum possible jerk magnitude is 0.1 m/s^2, assuming a perfectly smooth ride
-    avrg_smoothness = (x_smoothness_score + y_smoothness_score + z_smoothness_score) / 3
-    normalised_smoothness_score = avrg_smoothness / max_smoothness_score
-    
-    return decimal.Decimal(normalised_smoothness_score)
+        max_smoothness_score = 1 / decimal.Decimal(0.1)  # The maximum possible jerk magnitude is 0.1 m/s^2, assuming a perfectly smooth ride
+        avrg_smoothness = (x_smoothness_score + y_smoothness_score + z_smoothness_score) / 3
+        normalised_smoothness_score = avrg_smoothness / max_smoothness_score
+        
+        return decimal.Decimal(normalised_smoothness_score)
+    else:
+        return decimal.Decimal(normalised_smoothness_score)
 
 def process_file(filename):
     with open(filename, "r", encoding="utf-8") as file:
@@ -116,14 +119,14 @@ cmsg=''
 
 while True:   
     connection_socket,caddr=welcome_socket.accept()
-    if(len(cmsg)>0):
-        x_vals, y_vals, z_vals = process_file("data.txt")
-        if len(x_vals) or len(y_vals) or len(z_vals) == None:
-            resultround = decimal.Decimal((smoothness_score(x_vals, y_vals, z_vals, 1.0)))
-            resultround = round(resultround, 6)
-            resultscale= (resultround * 1000000)
-            print(resultscale)
-    connection_socket.send(str(resultscale).encode())
+    x_vals, y_vals, z_vals = process_file("data.txt")
+    resultround = decimal.Decimal((smoothness_score(x_vals, y_vals, z_vals, 1.0)))
+    resultround = round(resultround, 6)
+    resultscale= (resultround * 1000000)
+    if (len(str(resultscale))==5):
+        resultscale = '0' + str(resultscale)
+    print(resultscale)
+    connection_socket.send((resultscale).encode())
     cmsg=connection_socket.recv(1024)     
     cmsg=cmsg.decode()
     print(cmsg.split('\r'))
