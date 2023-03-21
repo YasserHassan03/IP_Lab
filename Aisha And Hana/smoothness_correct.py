@@ -261,6 +261,8 @@ if __name__ == '__main__':
                     delete_item(str(leaderboard),query_driver)
                     print(leaderboard_resp)
                     print("Put driver succeeded")
+                    with open('journey1.txt','w+',newline = '\r') as file:
+                        file.close()
 
                 else: 
                     pass
@@ -281,6 +283,8 @@ if __name__ == '__main__':
                         delete_item(str(leaderboard2),query_driver2 )
                         print(leaderboard_resp)
                         print("Put driver succeeded")
+                        with open('journey.txt','w+',newline = '\r') as file:
+                            file.close()
                     else:
                         pass
         time.sleep(5)
