@@ -15,7 +15,7 @@
 
 #define OFFSET -32
 #define PWM_PERIOD 16
-#define F_ORDER 49
+#define F_ORDER 20
 #define FRACTION_BITS 23
 #define CHARLIM 7		// Maximum character length of what the user places in memory.  Increase to allow longer sequences
 #define QUITLETTER '~' 		// Letter to kill all processing
@@ -26,6 +26,7 @@ int level;
 
 
 typedef int32_t fixed_32;
+
 int start_stop(int button){
 	if (button==1){
 		//printf('start journey\r');
@@ -423,8 +424,10 @@ int read_chars() {
 
 int main(){
 	alt_u32 exec_t2;
-	fixed_32 coeffs[]={24538,25771,29318,35140,43158,53256,65279,79042,94325,110883,128450,146737,165444,184263,202883,220992,238291,254488,269314,282519,293881,303209,310346,315172,317606,317606,315172,310346,303209,293881,282519,269314,254488,238291,220992,202883,184263,165444,146737,128450,110883,94325,79042,65279,53256,43158,35140,29318,25771,24538};
+	fixed_32 coeffs[]={0,-17803,-53061	,-97407	,-103638	,0	,266544	,683134	,1153381	,1527779,	1670749,	1527779,	1153381,	683134	,266544,	0,	-103638,	-97407,	-53061,	-17803,	0};
 	alt_32 *x = malloc(F_ORDER*sizeof(alt_32));
+	alt_32 *y = malloc(F_ORDER*sizeof(alt_32));
+	alt_32 *z = malloc(F_ORDER*sizeof(alt_32));
 	alt_32 x_read;
     alt_32 y_read;
     alt_32 z_read;
@@ -465,14 +468,20 @@ int main(){
         alt_up_accelerometer_spi_read_x_axis(acc_dev, & x_read);
         alt_up_accelerometer_spi_read_y_axis(acc_dev, & y_read);
         alt_up_accelerometer_spi_read_z_axis(acc_dev, & z_read);
-        //for(int i = 0; i < F_ORDER - 1; i ++){
-        //	x[i + 1] = x[i];//fill/shift elements of array
-        //}
-        //x[0] = x_read;
-        //alt_32 y = FIR(coeffs, x);
+        for(int i = 0; i < F_ORDER - 1; i ++){
+        	x[i + 1] = x[i];//fill/shift elements of array
+        	y[i+1]=y[i];
+        	z[i+1]=z[i];
+        }
+        x[0] = x_read;
+        alt_32 x_filt = FIR(coeffs, x);
+        y[0] = y_read;
+        alt_32 y_filt = FIR(coeffs, y);
+        z[0] = z_read;
+        alt_32 z_filt = FIR(coeffs ,z);
         //printf("%ld\n",y);
-        // alt_printf("raw data: %x\n", x_read);
-        printf("%ld,%ld,%ld\n",x_read,y_read,z_read);
+        //alt_printf("filtered: %x\n", x_filt);
+        printf("%ld,%ld,%ld\n",x_filt,y_filt,z_filt);
         convert_read((x_read+y_read+z_read)/3, & level, & led);
         n++;//count
         if (n>1000){
