@@ -7,7 +7,7 @@ from flask import Flask, Markup
 from pprint import pprint
 from boto3.dynamodb.conditions import Key
 from botocore.exceptions import ClientError
-
+from decimal import Decimal
 
 def get_item():
     dynamodb = boto3.resource('dynamodb', region_name='us-east-1')
@@ -15,14 +15,28 @@ def get_item():
 
     response = table.scan()
     data = response['Items']
-
+    
     while 'LastEvaluatedKey' in response:
         response = table.scan(ExclusiveStartKey=response['LastEvaluatedKey'])
         data.extend(response['Items']) 
+    
+    
 
-    obj = pd.DataFrame(json.loads(data))
+    smoothness_scores = []
+    journey_ids = []
+    driver_ids = []
+
+    for d in data:
+        smoothness_scores.append(d['info']['smoothness_score'])
+        journey_ids.append(d['JourneyId'])
+        driver_ids.append(d['DriverId'])
+
+    df = pd.DataFrame({'smoothness_score': smoothness_scores, 'JourneyId': journey_ids, 'DriverId': driver_ids})
+
+
+    #obj = pd.DataFrame(json.loads(data))
     #obj = obj.sort_values(by=['smoothness'], ascending=False)
-    return obj
+    return df
 
 app = Flask(__name__)
 app.route('/')
@@ -112,10 +126,23 @@ def query_david():
     while 'LastEvaluatedKey' in response:
         response = table.scan(ExclusiveStartKey=response['LastEvaluatedKey'])
         data.extend(response['Items']) 
+   
+    
+    smoothness_scores = []
+    journey_ids=[]
+    driver_ids=[]
 
-    obj = pd.DataFrame(json.loads(data))
+    for d in data:
+        journey_ids.append(d['JourneyId'])
+        driver_ids.append(d['DriverId'])
+        smoothness_scores.append(d['info']['smoothness_score'])
+    df = pd.DataFrame({'smoothness_score': smoothness_scores, 'JourneyId': journey_ids, 'DriverId': driver_ids})
+
+
+    
+    #obj = pd.DataFrame(json.loads(data))
     #obj = obj.sort_values(by=['smoothness'], ascending=False)
-    return obj
+    return df
 
 def query_robert():
     dynamodb = boto3.resource('dynamodb', region_name='us-east-1')
@@ -127,10 +154,24 @@ def query_robert():
     while 'LastEvaluatedKey' in response:
         response = table.scan(ExclusiveStartKey=response['LastEvaluatedKey'])
         data.extend(response['Items']) 
+   
 
-    obj = pd.DataFrame(json.loads(data))
+    
+    smoothness_scores = []
+    journey_ids=[]
+    driver_ids=[]
+
+    for d in data:
+        journey_ids.append(d['JourneyId'])
+        driver_ids.append(d['DriverId'])
+        smoothness_scores.append(d['info']['smoothness_score'])
+    df = pd.DataFrame({'smoothness_score': smoothness_scores, 'JourneyId': journey_ids, 'DriverId': driver_ids})
+
+
+    
+    #obj = pd.DataFrame(json.loads(data))
     #obj = obj.sort_values(by=['smoothness'], ascending=False)
-    return obj
+    return df
 
 
 @app.route('/formatting/David')
@@ -225,6 +266,9 @@ def dave():
     return str(Markup(css + table_html))
 
 if __name__ == "__main__":
+    a = get_item()
+    print(a)
     app.debug = True
     app.run(host="0.0.0.0", port=5000)
+  
 
