@@ -9,7 +9,6 @@ import decimal
 import numpy as np
 
 def smoothness_score(x_vals, y_vals, z_vals, time_interval):
-    #x_vals = x_vals
     x_jerk_list = [1,1,1]
     y_jerk_list = [1,1,1]
     z_jerk_list = [1,1,1]
@@ -20,46 +19,50 @@ def smoothness_score(x_vals, y_vals, z_vals, time_interval):
     y_smoothness_scores = []
     z_smoothness_scores = []
     
-    for i in range(1, len(x_vals)):
-        x_jerk = decimal.Decimal((x_vals[i] - x_vals[i-1]) / time_interval)
-        y_jerk = decimal.Decimal((y_vals[i] - y_vals[i-1]) / time_interval)
-        z_jerk = decimal.Decimal((z_vals[i] - z_vals[i-1]) / time_interval)
-        
-        x_jerk_list.append(x_jerk)
-        y_jerk_list.append(y_jerk)
-        z_jerk_list.append(z_jerk)
-        
-        x_jerk_magnitude = abs(decimal.Decimal(x_jerk))
-        y_jerk_magnitude = abs(decimal.Decimal(y_jerk))
-        z_jerk_magnitude = abs(decimal.Decimal(z_jerk))
-        
-        x_jerk_magnitudes.append(x_jerk_magnitude)
-        y_jerk_magnitudes.append(y_jerk_magnitude)
-        z_jerk_magnitudes.append(z_jerk_magnitude)
-
-        window_size = 5
-
-        for i in range(len(x_jerk_magnitudes)):
-            start = max(0, i-window_size)
-            end = min(len(x_jerk_magnitudes), i+window_size)
-            x_jerk_window = x_jerk_magnitudes[start:end]
-            y_jerk_window = y_jerk_magnitudes[start:end]
-            z_jerk_window = z_jerk_magnitudes[start:end]
+    for i in range(1, len(x_vals)) and range(1, len(y_vals)) and range(1, len(z_vals)):
+        if x_vals[i] and y_vals[i] and z_vals[i] != []:
             
-            try:
-                x_smoothness_score = 1 / decimal.Decimal(np.mean(x_jerk_window))
-                y_smoothness_score = 1 / decimal.Decimal(np.mean(y_jerk_window))
-                z_smoothness_score = 1 / decimal.Decimal(np.mean(z_jerk_window))
-            except:
-                x_smoothness_score = 0
-                y_smoothness_score = 0
-                z_smoothness_score = 0
+            
+            x_jerk = decimal.Decimal((x_vals[i] - x_vals[i-1]) / time_interval)
+            y_jerk = decimal.Decimal((y_vals[i] - y_vals[i-1]) / time_interval)
+            z_jerk = decimal.Decimal((z_vals[i] - z_vals[i-1]) / time_interval)
 
-            x_smoothness_scores.append(x_smoothness_score)
-            y_smoothness_scores.append(y_smoothness_score)
-            z_smoothness_scores.append(z_smoothness_score)
-        
-        
+            x_jerk_list.append(x_jerk)
+            y_jerk_list.append(y_jerk)
+            z_jerk_list.append(z_jerk)
+
+            x_jerk_magnitude = abs(decimal.Decimal(x_jerk))
+            y_jerk_magnitude = abs(decimal.Decimal(y_jerk))
+            z_jerk_magnitude = abs(decimal.Decimal(z_jerk))
+
+            x_jerk_magnitudes.append(x_jerk_magnitude)
+            y_jerk_magnitudes.append(y_jerk_magnitude)
+            z_jerk_magnitudes.append(z_jerk_magnitude)
+
+            window_size = 5
+
+            for i in range(len(x_jerk_magnitudes)):
+                start = max(0, i-window_size)
+                end = min(len(x_jerk_magnitudes), i+window_size)
+                x_jerk_window = x_jerk_magnitudes[start:end]
+                y_jerk_window = y_jerk_magnitudes[start:end]
+                z_jerk_window = z_jerk_magnitudes[start:end]
+
+                try:
+                    x_smoothness_score = 1 / decimal.Decimal(np.mean(x_jerk_window))
+                    y_smoothness_score = 1 / decimal.Decimal(np.mean(y_jerk_window))
+                    z_smoothness_score = 1 / decimal.Decimal(np.mean(z_jerk_window))
+                except:
+                    x_smoothness_score = 0
+                    y_smoothness_score = 0
+                    z_smoothness_score = 0
+
+                x_smoothness_scores.append(x_smoothness_score)
+                y_smoothness_scores.append(y_smoothness_score)
+                z_smoothness_scores.append(z_smoothness_score)
+
+        else:
+            pass
     average_x_smoothness = decimal.Decimal(np.mean(x_smoothness_scores))
     average_y_smoothness = decimal.Decimal(np.mean(y_smoothness_scores))
     average_z_smoothness = decimal.Decimal(np.mean(z_smoothness_scores))
@@ -219,7 +222,7 @@ def query_driver2(DriverId, dynamodb=None):
     if not dynamodb:
         dynamodb = boto3.resource('dynamodb', region_name='us-east-1')
 
-    table = dynamodb.Table('Robertsresults')
+    table = dynamodb.Table('Robsresults')
     response = table.query(
         KeyConditionExpression=Key('DriverId').eq(DriverId)
     )
@@ -228,36 +231,37 @@ def query_driver2(DriverId, dynamodb=None):
 
 if __name__ == '__main__':
     while True:
-        x_vals, y_vals, z_vals = process_file("/home/ubuntu/Aisha And Hana/data.txt")
-        if x_vals != None:
+        x_vals, y_vals, z_vals = process_file("/home/ubuntu/Python Scripts and data for Lab 6/data.txt")
+        for i in range(1, len(x_vals)):
+            if x_vals[i] and y_vals[i] and z_vals[i] != []:
+                result = decimal.Decimal((smoothness_score(x_vals, y_vals, z_vals, 1.0)))
+                resultround = round(result, 6)
+                resultscale= (resultround * 1000000)
+                #print(resultscale)
+                query_driver ='David'
+                test=query_and_project_drivers(query_driver)
+                #print(test)
+                leaderboard = extract_journey_id(test)
+                #print(leaderboard)
+                #print(test)
+                store_value = put_result('David', leaderboard + 1, resultscale)
+                leaderboard_resp = put_leaderboard('David', leaderboard + 1, resultscale)
+                delete_item(str(leaderboard),query_driver)
+#       
+                x_vals, y_vals, z_vals = process_file("/home/ubuntu/Python Scripts and data for Lab 6/data.txt")
+                result2 = decimal.Decimal((smoothness_score(x_vals, y_vals, z_vals, 1.0)))
+                result2round = round(result, 6)
+                resultscale2= (result2round * 1000000)
+                query_driver2 ='Robert'
+                test2=query_and_project_drivers(query_driver2)
+                #put= put_result2('Robert', leaderboard + 1, result)
+                leaderboard2 = extract_journey_id(test2)
+                store_value2 = put_result2('Robert', leaderboard2 + 1, resultscale2)
+                leaderboard_resp2 = put_leaderboard('Robert', leaderboard2 + 1, resultscale2)
+                delete_item(str(leaderboard2),query_driver2)
 
-            result = decimal.Decimal((smoothness_score(x_vals, y_vals, z_vals, 1.0)))
-            resultround = round(result, 6)
-            resultscale= (resultround * 1000000)
-            query_driver ='David'
-            test=query_and_project_drivers(query_driver)
-            leaderboard = extract_journey_id(test)
-            print(leaderboard)
-            print(test)
-            store_value = put_result('David', leaderboard + 1, resultscale)
-            leaderboard_resp = put_leaderboard('David', leaderboard + 1, resultscale)
-            delete_item(str(leaderboard),query_driver)
-
-            x_vals, y_vals, z_vals = process_file("/home/ubuntu/Aisha And Hana/data.txt")
-            result2 = decimal.Decimal((smoothness_score(x_vals, y_vals, z_vals, 1.0)))
-            result2round = round(result, 6)
-            resultscale2= (result2round * 1000000)
-            query_driver2 ='Robert'
-            test2=query_and_project_drivers(query_driver2)
-            #put= put_result2('Robert', leaderboard + 1, result)
-            leaderboard2 = extract_journey_id(test2)
-            store_value2 = put_result2('Robert', leaderboard2 + 1, resultscale2)
-            leaderboard_resp2 = put_leaderboard('Robert', leaderboard2 + 1, resultscale2)
-            delete_item(str(leaderboard2),query_driver2)
-
-            print(leaderboard_resp)
-            print("Put driver succeeded")
-        else:
-            continue
+                print(leaderboard_resp)
+                print("Put driver succeeded")
+            else:
+                pass
         time.sleep(5)
-        print('james is a liar')
