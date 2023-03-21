@@ -13,7 +13,7 @@ print("We're in server now..")
 #clear file for new data
 #select port for server
 resultscale = '000008' #test score val initial
-server_port=12001
+server_port=12002
 #create welcoming socket
 welcome_socket=socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 #bind server to local host

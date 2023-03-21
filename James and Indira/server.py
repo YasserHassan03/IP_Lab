@@ -5,7 +5,14 @@ import threading
 import decimal
 import numpy as np
 def smoothness_score(x_vals, y_vals, z_vals, time_interval):
+<<<<<<< HEAD
     if all([x_vals, y_vals, z_vals]) != []:
+=======
+    #x_vals = x_vals
+    if x_vals or y_vals or z_vals == []:
+        return 0
+    else:
+>>>>>>> 2550b25 (aaa)
         x_jerk_list = [1,1,1]
         y_jerk_list = [1,1,1]
         z_jerk_list = [1,1,1]
@@ -15,8 +22,13 @@ def smoothness_score(x_vals, y_vals, z_vals, time_interval):
         x_smoothness_scores = []
         y_smoothness_scores = []
         z_smoothness_scores = []
+<<<<<<< HEAD
 
         for i in range(1, len(x_vals)-1):
+=======
+        
+        for i in range(1, len(z_vals)):
+>>>>>>> 2550b25 (aaa)
             x_jerk = decimal.Decimal((x_vals[i] - x_vals[i-1]) / time_interval)
             y_jerk = decimal.Decimal((y_vals[i] - y_vals[i-1]) / time_interval)
             print(len(z_vals))
@@ -33,9 +45,9 @@ def smoothness_score(x_vals, y_vals, z_vals, time_interval):
             x_jerk_magnitudes.append(x_jerk_magnitude)
             y_jerk_magnitudes.append(y_jerk_magnitude)
             z_jerk_magnitudes.append(z_jerk_magnitude)
-
+    
             window_size = 5
-
+    
             for i in range(len(x_jerk_magnitudes)):
                 start = max(0, i-window_size)
                 end = min(len(x_jerk_magnitudes), i+window_size)
@@ -48,10 +60,10 @@ def smoothness_score(x_vals, y_vals, z_vals, time_interval):
                     y_smoothness_score = 1 / decimal.Decimal(np.mean(y_jerk_window))
                     z_smoothness_score = 1 / decimal.Decimal(np.mean(z_jerk_window))
                 except:
-                    x_smoothness_score = 1
-                    y_smoothness_score = 1
-                    z_smoothness_score = 1
-
+                    x_smoothness_score = 0
+                    y_smoothness_score = 0
+                    z_smoothness_score = 0
+    
                 x_smoothness_scores.append(x_smoothness_score)
                 y_smoothness_scores.append(y_smoothness_score)
                 z_smoothness_scores.append(z_smoothness_score)
@@ -69,8 +81,6 @@ def smoothness_score(x_vals, y_vals, z_vals, time_interval):
         avrg_smoothness = (x_smoothness_score + y_smoothness_score + z_smoothness_score) / 3
         normalised_smoothness_score = avrg_smoothness / max_smoothness_score
         
-        return decimal.Decimal(normalised_smoothness_score)
-    else:
         return decimal.Decimal(normalised_smoothness_score)
 
 def process_file(filename):
@@ -103,7 +113,7 @@ print("We're in server now..")
 #clear file for new data
 #select port for server
 resultscale = '000000' #test score val initial
-server_port=12000
+server_port=12003
 #create welcoming socket
 welcome_socket=socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 #bind server to local host

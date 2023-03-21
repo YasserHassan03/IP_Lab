@@ -16,7 +16,7 @@ def send_on_jtag():
     send = -1  # don't start journey til start is pressed
     while True:  # possibly print a special key from fpga if button is pressed to start/stop loop
         server_name = '54.174.33.34'
-        server_port = 12000
+        server_port = 12001
         client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         client_socket.connect((server_name, server_port))
         print("hello")
@@ -38,6 +38,10 @@ def send_on_jtag():
                 send=-1
             if send>-1:
                 vals = vals.split('\r')       #formatting
+                del vals[0:5]    
+                vals.pop()
+                vals.pop()
+                vals.pop()
                 vals= ''.join(vals)                                 # split the string according to the defined delimiters <-->
                 #file.write(vals.decode("utf-8")  )   
                 client_socket.send(vals.encode())                                  # return the data within the delimtiers <-->
