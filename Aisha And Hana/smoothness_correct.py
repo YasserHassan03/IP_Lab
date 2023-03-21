@@ -232,9 +232,9 @@ def query_driver2(DriverId, dynamodb=None):
 
 
 if __name__ == '__main__':
-    filename = "/home/ubuntu/Python Scripts and data for Lab 6/data.txt"
+    filename = "journey1.txt"
     prev_mod_time = os.path.getmtime(filename)
-    file2= "/home/ubuntu/Python Scripts and data for Lab 6/data1.txt"
+    file2= "journey.txt"
     prev_time = os.path.getmtime(file2)
 
 
