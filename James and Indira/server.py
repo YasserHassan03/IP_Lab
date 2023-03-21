@@ -103,7 +103,7 @@ print("We're in server now..")
 #clear file for new data
 #select port for server
 resultscale = '000000' #test score val initial
-server_port=12003
+server_port=12009
 #create welcoming socket
 welcome_socket=socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 #bind server to local host
@@ -117,18 +117,23 @@ cmsg=''
 #print(score())
 
  #send score to client 
-resultscale=1
 while True:   
     connection_socket,caddr=welcome_socket.accept()
     x_vals, y_vals, z_vals = process_file("data.txt")
-    if len(x_vals) and len(y_vals) and len(z_vals) != 0:
+    #print(len(x_vals),len(y_vals),len(z_vals))
+    if len(x_vals) and len(y_vals) and len(z_vals) > 1:
         resultround = decimal.Decimal((smoothness_score(x_vals, y_vals, z_vals, 1.0)))
         resultround = round(resultround, 6)
-        resultscale= (resultround * 1000000)
-    #if (len(str(resultscale))==5):
-        resultscale = '0' + str(resultscale)
-        print(resultscale)
-    connection_socket.send((resultscale).encode())
+        try:
+            resultscale= str(round((resultround * 100000)))
+            if len(resultscale)==5:
+                resultscale='0'+resultscale
+            elif len(resultscale)==4:
+                resultscale='00'+resultscale
+            print(resultscale)
+        except ValueError:
+            continue
+    connection_socket.send((str(resultscale)).encode())
     cmsg=connection_socket.recv(1024)     
     cmsg=cmsg.decode()
     print(cmsg.split('\r'))
