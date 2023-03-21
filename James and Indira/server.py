@@ -5,7 +5,7 @@ import threading
 import decimal
 import numpy as np
 def smoothness_score(x_vals, y_vals, z_vals, time_interval):
-    if x_vals and y_vals and z_vals != []:
+    if all([x_vals, y_vals, z_vals]) != []:
         x_jerk_list = [1,1,1]
         y_jerk_list = [1,1,1]
         z_jerk_list = [1,1,1]
@@ -16,9 +16,10 @@ def smoothness_score(x_vals, y_vals, z_vals, time_interval):
         y_smoothness_scores = []
         z_smoothness_scores = []
 
-        for i in range(1, len(x_vals)):
+        for i in range(1, len(x_vals)-1):
             x_jerk = decimal.Decimal((x_vals[i] - x_vals[i-1]) / time_interval)
             y_jerk = decimal.Decimal((y_vals[i] - y_vals[i-1]) / time_interval)
+            print(len(z_vals))
             z_jerk = decimal.Decimal((z_vals[i] - z_vals[i-1]) / time_interval)
             
             x_jerk_list.append(x_jerk)
@@ -116,16 +117,17 @@ cmsg=''
 #print(score())
 
  #send score to client 
-
+resultscale=1
 while True:   
     connection_socket,caddr=welcome_socket.accept()
     x_vals, y_vals, z_vals = process_file("data.txt")
-    resultround = decimal.Decimal((smoothness_score(x_vals, y_vals, z_vals, 1.0)))
-    resultround = round(resultround, 6)
-    resultscale= (resultround * 1000000)
-    if (len(str(resultscale))==5):
+    if len(x_vals) and len(y_vals) and len(z_vals) != 0:
+        resultround = decimal.Decimal((smoothness_score(x_vals, y_vals, z_vals, 1.0)))
+        resultround = round(resultround, 6)
+        resultscale= (resultround * 1000000)
+    #if (len(str(resultscale))==5):
         resultscale = '0' + str(resultscale)
-    print(resultscale)
+        print(resultscale)
     connection_socket.send((resultscale).encode())
     cmsg=connection_socket.recv(1024)     
     cmsg=cmsg.decode()
