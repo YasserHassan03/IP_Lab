@@ -5,6 +5,7 @@ import threading
 import decimal
 import numpy as np
 import shutil
+from statistics import mean
 
 def smoothness_score(x_vals, y_vals, z_vals, time_interval):
     x_jerk_list = [1,1,1]
@@ -104,12 +105,14 @@ with open ('data.txt','w+',newline='\r') as file:
     file.close()
 with open ('journey.txt','w+',newline='\r') as file:
     file.close()
+with open ('latest.txt','w+',newline='\r') as file:
+    file.close()
 #deadfile= open('data.txt','w')
 #deadfile.close()
 #clear file for new data
 #select port for server
 resultscale = '000000' #test score val initial
-server_port=12003
+server_port=12005
 #create welcoming socket
 welcome_socket=socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 #bind server to local host
@@ -125,13 +128,16 @@ cmsg=''
  #send score to client 
 while True:   
     connection_socket,caddr=welcome_socket.accept()
-    x_vals, y_vals, z_vals = process_file("data.txt")
+    x_vals, y_vals, z_vals = process_file("latest.txt")
     #print(len(x_vals),len(y_vals),len(z_vals))
     if len(x_vals) + len(y_vals) + len(z_vals) > 3:
         resultround = decimal.Decimal((smoothness_score(x_vals, y_vals, z_vals, 1.0)))
+        score=[]
         resultround = round(resultround, 6)
         try:
-            resultscale= str(round((resultround * 100000)))
+            score.append(resultround)
+            resultscale=round(mean(score)*100000)
+            resultscale=str(resultscale)
             if len(resultscale)==5:
                 resultscale='0'+resultscale
             elif len(resultscale)==4:
@@ -147,9 +153,13 @@ while True:
         shutil.copyfile('data.txt','journey.txt')
         print("written")
         with open('data.txt','w',newline='\r') as file:
-            file.close()        
+            file.close()    
+        resultscale = '000000'    
     print(cmsg.split('\r'))
     with open ('data.txt','a',newline='\r') as file:
+        file.write(cmsg)
+        file.close()
+    with open ('latest.txt', 'w+', newline='\r') as file:
         file.write(cmsg)
         file.close()
     

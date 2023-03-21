@@ -11,7 +11,7 @@ def put_leaderboard(DriverId,JourneyId, smoothness_score, dynamodb=None):
             'DriverId': DriverId,
             'JourneyId': JourneyId,
             'info': {
-                'smoothness-score' : smoothness_score
+                'smoothness_score' : smoothness_score
             }
         }
     )

@@ -87,7 +87,7 @@ def bob():
         '''
     
     
-    table_html = ftable_html = f"<html><head><meta http-equiv='refresh' content='10'><title>Drivers Leaderboard</title></head><body><h1 style='text-align:center;'>Drivers Leaderboard</h1>{table_html}<p align=\"center\"><a href=formatting/David ><button class=grey style=\"height:75px;width:150px\">David's Resutls</button></a></p><p align=\"center\"><a href=formatting/Robert ><button class=grey style=\"height:75px;width:150px\">Robert's Resutls</button></a></p></body></html>"
+    table_html = ftable_html = f"<html><head><meta http-equiv='refresh' content='5'><title>Drivers Leaderboard</title></head><body><h1 style='text-align:center;'>Drivers Leaderboard</h1>{table_html}<p align=\"center\"><a href=formatting/David ><button class=grey style=\"height:75px;width:150px\">David's Resutls</button></a></p><p align=\"center\"><a href=formatting/Robert ><button class=grey style=\"height:75px;width:150px\">Robert's Resutls</button></a></p></body></html>"
 
     return str(Markup(css + table_html))
 
