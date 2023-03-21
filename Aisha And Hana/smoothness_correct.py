@@ -22,6 +22,7 @@ def smoothness_score(x_vals, y_vals, z_vals, time_interval):
     for i in range(1, len(x_vals)) and range(1, len(y_vals)) and range(1, len(z_vals)):
         if x_vals[i] and y_vals[i] and z_vals[i] != []:
             
+            
             x_jerk = decimal.Decimal((x_vals[i] - x_vals[i-1]) / time_interval)
             y_jerk = decimal.Decimal((y_vals[i] - y_vals[i-1]) / time_interval)
             z_jerk = decimal.Decimal((z_vals[i] - z_vals[i-1]) / time_interval)
