@@ -7,6 +7,7 @@ from boto3.dynamodb.conditions import Key
 from botocore.exceptions import ClientError
 import decimal
 import numpy as np
+import os
 
 def smoothness_score(x_vals, y_vals, z_vals, time_interval):
     x_jerk_list = [1,1,1]
@@ -229,39 +230,58 @@ def query_driver2(DriverId, dynamodb=None):
     return response['Items']
 
 
-if __name__ == '__main__':
-    while True:
-        x_vals, y_vals, z_vals = process_file("/home/ubuntu/Python Scripts and data for Lab 6/data.txt")
-        for i in range(1, len(x_vals)):
-            if x_vals[i] and y_vals[i] and z_vals[i] != []:
-                result = decimal.Decimal((smoothness_score(x_vals, y_vals, z_vals, 1.0)))
-                resultround = round(result, 6)
-                resultscale= (resultround * 1000000)
-                #print(resultscale)
-                query_driver ='David'
-                test=query_and_project_drivers(query_driver)
-                #print(test)
-                leaderboard = extract_journey_id(test)
-                #print(leaderboard)
-                #print(test)
-                store_value = put_result('David', leaderboard + 1, resultscale)
-                leaderboard_resp = put_leaderboard('David', leaderboard + 1, resultscale)
-                delete_item(str(leaderboard),query_driver)
-#       
-                x_vals, y_vals, z_vals = process_file("/home/ubuntu/Python Scripts and data for Lab 6/data.txt")
-                result2 = decimal.Decimal((smoothness_score(x_vals, y_vals, z_vals, 1.0)))
-                result2round = round(result, 6)
-                resultscale2= (result2round * 1000000)
-                query_driver2 ='Robert'
-                test2=query_and_project_drivers(query_driver2)
-                #put= put_result2('Robert', leaderboard + 1, result)
-                leaderboard2 = extract_journey_id(test2)
-                store_value2 = put_result2('Robert', leaderboard2 + 1, resultscale2)
-                leaderboard_resp2 = put_leaderboard('Robert', leaderboard2 + 1, resultscale2)
-                delete_item(str(leaderboard2),query_driver2)
 
-                print(leaderboard_resp)
-                print("Put driver succeeded")
-            else:
-                pass
-        time.sleep(5)
+if __name__ == '__main__':
+    filename = "/home/ubuntu/Python Scripts and data for Lab 6/data.txt"
+    prev_mod_time = os.path.getmtime(filename)
+    file2= "/home/ubuntu/Python Scripts and data for Lab 6/data1.txt"
+    prev_time = os.path.getmtime(file2)
+
+
+    while True:
+        print("i am here")
+        mod_time = os.path.getmtime(filename)
+        mod2 = os.path.getmtime(file2)
+        if mod_time != prev_mod_time:
+            prev_mod_time = mod_time
+            x_vals, y_vals, z_vals = process_file(filename)
+            for i in range(1, len(x_vals)):
+                if x_vals[i] and y_vals[i] and z_vals[i] != []:
+                    result = decimal.Decimal((smoothness_score(x_vals, y_vals, z_vals, 1.0)))
+                    resultround = round(result, 6)
+                    resultscale= (resultround * 1000000)
+                    #print(resultscale)
+                    query_driver ='David'
+                    test=query_and_project_drivers(query_driver)
+                    #print(test)
+                    leaderboard = extract_journey_id(test)
+                    #print(leaderboard)
+                    #print(test)
+                    store_value = put_result('David', leaderboard + 1, resultscale)
+                    leaderboard_resp = put_leaderboard('David', leaderboard + 1, resultscale)
+                    delete_item(str(leaderboard),query_driver)
+                    print(leaderboard_resp)
+                    print("Put driver succeeded")
+
+                else: 
+                    pass
+        elif mod2 != prev_time:
+                prev_time = mod2
+                x_vals, y_vals, z_vals = process_file(file2)
+                for i in range (1,len(x_vals)):
+                    if x_vals[i] and y_vals[i] and z_vals[i] != []:
+                        result2 = decimal.Decimal((smoothness_score(x_vals, y_vals, z_vals, 1.0)))
+                        result2round = round(result, 6)
+                        resultscale2= (result2round * 1000000)
+                        query_driver2 ='Robert'
+                        test2=query_and_project_drivers(query_driver2)
+                        #put= put_result2('Robert', leaderboard + 1, result)
+                        leaderboard2 = extract_journey_id(test2)
+                        store_value2 = put_result2('Robert', leaderboard2 + 1, resultscale2)
+                        leaderboard_resp2 = put_leaderboard('Robert', leaderboard2 + 1, resultscale2)
+                        delete_item(str(leaderboard2),query_driver2 )
+                        print(leaderboard_resp)
+                        print("Put driver succeeded")
+                    else:
+                        pass
+        time.sleep(10)
