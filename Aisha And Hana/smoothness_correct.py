@@ -265,7 +265,7 @@ if __name__ == '__main__':
 
                 else: 
                     pass
-        elif mod2 != prev_time:
+        if mod2 != prev_time:
                 prev_time = mod2
                 x_vals, y_vals, z_vals = process_file(file2)
                 for i in range (1,len(x_vals)):
@@ -284,4 +284,4 @@ if __name__ == '__main__':
                         print("Put driver succeeded")
                     else:
                         pass
-        time.sleep(10)
+        time.sleep(5)
