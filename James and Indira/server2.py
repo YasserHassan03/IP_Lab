@@ -98,6 +98,8 @@ def process_file(filename):
 
 
 print("We're in server now..")
+with open ('data1.txt','w+',newline='\r') as file:
+    file.close()
 #deadfile= open('data.txt','w')
 #deadfile.close()
 #clear file for new data
@@ -137,7 +139,7 @@ while True:
     cmsg=connection_socket.recv(1024)     
     cmsg=cmsg.decode()
     print(cmsg.split('\r'))
-    with open ('data1.txt','w+',newline='\r') as file:
+    with open ('data1.txt','r+',newline='\r') as file:
         file.write(cmsg)
         file.close()
     

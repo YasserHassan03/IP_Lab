@@ -16,7 +16,7 @@ def send_on_jtag():
     send = -1  # don't start journey til start is pressed
     while True:  # possibly print a special key from fpga if button is pressed to start/stop loop
         server_name = '54.174.33.34'
-        server_port = 12002
+        server_port = 12007
         client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         client_socket.connect((server_name, server_port))
         print("hello")
