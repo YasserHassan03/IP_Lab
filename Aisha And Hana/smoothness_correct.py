@@ -233,17 +233,16 @@ def query_driver2(DriverId, dynamodb=None):
 
 if __name__ == '__main__':
     filename = "journey1.txt"
-    prev_mod_time = os.path.getmtime(filename)
+    #prev_mod_time = os.path.getmtime(filename)
     file2= "journey.txt"
-    prev_time = os.path.getmtime(file2)
+    #prev_time = os.path.getmtime(file2)
 
 
     while True:
         print("i am here")
-        mod_time = os.path.getmtime(filename)
-        mod2 = os.path.getmtime(file2)
-        if mod_time != prev_mod_time:
-            prev_mod_time = mod_time
+        
+        if os.path.getsize(filename)!=0 :
+            #prev_mod_time = mod_time
             x_vals, y_vals, z_vals = process_file(filename)
             for i in range(1, len(x_vals)):
                 if x_vals[i] and y_vals[i] and z_vals[i] != []:
@@ -262,16 +261,18 @@ if __name__ == '__main__':
                     delete_item(str(leaderboard),query_driver)
                     print(leaderboard_resp)
                     print("Put driver succeeded")
+                    with open('journey1.txt','w',newline = '\r') as file:
+                        file.close()
+                    break 
+                    
 
-                else: 
-                    pass
-        elif mod2 != prev_time:
-                prev_time = mod2
+        if os.path.getsize(file2)!=0:
+                #prev_time = mod2
                 x_vals, y_vals, z_vals = process_file(file2)
                 for i in range (1,len(x_vals)):
                     if x_vals[i] and y_vals[i] and z_vals[i] != []:
                         result2 = decimal.Decimal((smoothness_score(x_vals, y_vals, z_vals, 1.0)))
-                        result2round = round(result, 6)
+                        result2round = round(result2, 6)
                         resultscale2= (result2round * 1000000)
                         query_driver2 ='Robert'
                         test2=query_and_project_drivers(query_driver2)
@@ -280,8 +281,9 @@ if __name__ == '__main__':
                         store_value2 = put_result2('Robert', leaderboard2 + 1, resultscale2)
                         leaderboard_resp2 = put_leaderboard('Robert', leaderboard2 + 1, resultscale2)
                         delete_item(str(leaderboard2),query_driver2 )
-                        print(leaderboard_resp)
+                        print(leaderboard_resp2)
                         print("Put driver succeeded")
-                    else:
-                        pass
-        time.sleep(10)
+                        with open('journey.txt','w',newline = '\r') as file:
+                            file.close()
+                        break
+        time.sleep(5)

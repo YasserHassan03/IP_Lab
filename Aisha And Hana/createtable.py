@@ -5,7 +5,7 @@ def create_leaderboard_table(dynamodb=None):
         dynamodb = boto3.resource('dynamodb',region_name='us-east-1')
 
     table = dynamodb.create_table(
-        TableName='Leaderboard',
+        TableName='Davidsresults',
         KeySchema=[
         {
                 'AttributeName': 'DriverId',    
