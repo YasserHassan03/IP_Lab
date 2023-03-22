@@ -86,10 +86,11 @@ def bob():
         </style>
         '''
     
+    image_html = '<img src="sarim.png" alt="image">'
     
-    table_html = ftable_html = f"<html><head><meta http-equiv='refresh' content='10'><title>Drivers Leaderboard</title></head><body><h1 style='text-align:center;'>Drivers Leaderboard</h1>{table_html}<p align=\"center\"><a href=formatting/David ><button class=grey style=\"height:75px;width:150px\">David's Resutls</button></a></p><p align=\"center\"><a href=formatting/Robert ><button class=grey style=\"height:75px;width:150px\">Robert's Resutls</button></a></p></body></html>"
+    table_html = ftable_html = f"<html><head><meta http-equiv='refresh' content='5'><title>Drivers Leaderboard</title></head><body><h1 style='text-align:center;'>Drivers Leaderboard</h1>{table_html}<p align=\"center\"><a href=formatting/David ><button class=grey style=\"height:75px;width:150px\">David's Resutls</button></a></p><p align=\"center\"><a href=formatting/Robert ><button class=grey style=\"height:75px;width:150px\">Robert's Resutls</button></a></p></body></html>"
 
-    return str(Markup(css + table_html))
+    return str(Markup(css + table_html + image_html))
 
 
 #def query_and_project_movies(DriverId, dynamodb=None):
@@ -215,7 +216,7 @@ def Fred():
         '''
     
     
-    table_html = ftable_html = f"<html><head><meta http-equiv='refresh' content='10'><title>David's Results</title></head><body><h1 style='text-align:center;'>David's result</h1>{table_html}<p align=\"center\"></p></html>"
+    table_html = ftable_html = f"<html><head><meta http-equiv='refresh' content='5'><title>David's Results</title></head><body><h1 style='text-align:center;'>David's result</h1>{table_html}<p align=\"center\"></p></html>"
 
     return str(Markup(css + table_html))
 
@@ -260,7 +261,7 @@ def dave():
         '''
     
     
-    table_html = ftable_html = f"<html><head><meta http-equiv='refresh' content='10'><title>Rob's Leaderboard</title></head><body><h1 style='text-align:center;'>Rob's Leaderboard</h1>{table_html}<p align=\"center\"></p></html>"
+    table_html = ftable_html = f"<html><head><meta http-equiv='refresh' content='5'><title>Rob's Leaderboard</title></head><body><h1 style='text-align:center;'>Rob's Leaderboard</h1>{table_html}<p align=\"center\"></p></html>"
     #<a href=formatting/David ><button class=grey style=\"height:75px;width:150px\">David's Resutls</button></a></p><p align=\"center\"><a href=formatting/Robert ><button class=grey style=\"height:75px;width:150px\">Robert's Resutls</button></a></p></body></html>"
 
     return str(Markup(css + table_html))
