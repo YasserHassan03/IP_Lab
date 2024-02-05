@@ -1,1 +1,1 @@
-# IP_Lab
+Part of the Information processing course in second year. The Group worked on using FPGAs to make a stabiliser for buses which would then rank the drivers based on the comfort of their journey, giving them a score before then displaying it on a flask website
